@@ -1,7 +1,7 @@
 {
   "name": "hybrid-query-system",
   "version": "1.0.0",
-  "description": "design and implement a system that can answer user questions by intelligently",
+  "description": "Design and implement a system that can answer specific user questions.",
   "keywords": [
     "assignment",
     "test"
