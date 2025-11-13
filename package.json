@@ -1,0 +1,24 @@
+{
+  "name": "hybrid-query-system",
+  "version": "1.0.0",
+  "description": "design and implement a system that can answer user questions by intelligently",
+  "keywords": [
+    "assignment",
+    "test"
+  ],
+  "homepage": "https://github.com/mavilov/hybrid-query-system#readme",
+  "bugs": {
+    "url": "https://github.com/mavilov/hybrid-query-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavilov/hybrid-query-system.git"
+  },
+  "license": "ISC",
+  "author": "Maksim Avilov",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  }
+}
