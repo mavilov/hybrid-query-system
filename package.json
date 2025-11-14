@@ -19,6 +19,11 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "prettier:test": "prettier --check ./**/*.{js,json,md}",
+    "prettier:fix": "prettier --write ./**/*.{js,json,md}"
+  },
+  "dependencies": {
+    "prettier": "^3.6.2"
   }
 }
