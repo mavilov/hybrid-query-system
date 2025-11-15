@@ -44,8 +44,6 @@ You must respond ONLY with the JSON object. Do not include any explanation or ma
 
     const fullPrompt = `${systemInstruction}\n\nUser question to decompose: "${query}"`
 
-    console.log('Full prompt for Ollama:', fullPrompt)
-
     const ollamaRequestPayload = {
         model: OLLAMA_MODEL,
         prompt: fullPrompt,

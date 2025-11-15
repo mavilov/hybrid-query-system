@@ -19,7 +19,7 @@
     "type": "module",
     "main": "src/start.js",
     "scripts": {
-        "test": "test",
+        "test": "node --test tests/**/*.test.js",
         "prettier:test": "prettier --check ./**/*.{js,json,md}",
         "prettier:fix": "prettier --write ./**/*.{js,json,md}",
         "lint": "eslint .",
