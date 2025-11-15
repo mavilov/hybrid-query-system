@@ -1,7 +1,7 @@
 {
   "name": "hybrid-query-system",
   "version": "1.0.0",
-  "description": "Design and implement a system that can answer specific user questions.",
+  "description": "Hybrid search engine that can answer specific user questions about software vulnerabilities.",
   "keywords": [
     "assignment",
     "test"
@@ -17,13 +17,23 @@
   "license": "ISC",
   "author": "Maksim Avilov",
   "type": "module",
-  "main": "index.js",
+  "main": "src/start.js",
   "scripts": {
     "test": "test",
     "prettier:test": "prettier --check ./**/*.{js,json,md}",
-    "prettier:fix": "prettier --write ./**/*.{js,json,md}"
+    "prettier:fix": "prettier --write ./**/*.{js,json,md}",
+    "lint": "eslint .",
+    "develop": "node --watch src/start.js",
+    "setup": "node src/initial-data-setup/data_setup.js",
+    "start": "node src/start.js"
   },
   "dependencies": {
+    "better-sqlite3": "^12.4.1",
     "prettier": "^3.6.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
   }
 }
