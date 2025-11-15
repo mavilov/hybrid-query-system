@@ -1,39 +1,40 @@
 {
-  "name": "hybrid-query-system",
-  "version": "1.0.0",
-  "description": "Hybrid search engine that can answer specific user questions about software vulnerabilities.",
-  "keywords": [
-    "assignment",
-    "test"
-  ],
-  "homepage": "https://github.com/mavilov/hybrid-query-system#readme",
-  "bugs": {
-    "url": "https://github.com/mavilov/hybrid-query-system/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mavilov/hybrid-query-system.git"
-  },
-  "license": "ISC",
-  "author": "Maksim Avilov",
-  "type": "module",
-  "main": "src/start.js",
-  "scripts": {
-    "test": "test",
-    "prettier:test": "prettier --check ./**/*.{js,json,md}",
-    "prettier:fix": "prettier --write ./**/*.{js,json,md}",
-    "lint": "eslint .",
-    "develop": "node --watch src/start.js",
-    "setup": "node src/initial-data-setup/data_setup.js",
-    "start": "node src/start.js"
-  },
-  "dependencies": {
-    "better-sqlite3": "^12.4.1",
-    "prettier": "^3.6.2"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
-    "globals": "^16.5.0"
-  }
+    "name": "hybrid-query-system",
+    "version": "1.0.0",
+    "description": "Hybrid search engine that can answer specific user questions about software vulnerabilities.",
+    "keywords": [
+        "assignment",
+        "test"
+    ],
+    "homepage": "https://github.com/mavilov/hybrid-query-system#readme",
+    "bugs": {
+        "url": "https://github.com/mavilov/hybrid-query-system/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mavilov/hybrid-query-system.git"
+    },
+    "license": "ISC",
+    "author": "Maksim Avilov",
+    "type": "module",
+    "main": "src/start.js",
+    "scripts": {
+        "test": "test",
+        "prettier:test": "prettier --check ./**/*.{js,json,md}",
+        "prettier:fix": "prettier --write ./**/*.{js,json,md}",
+        "lint": "eslint .",
+        "develop": "node --watch src/start.js",
+        "setup": "node src/initial-data-setup/data_setup.js",
+        "resetData": "rm -r data/vulnerability_db.db data/tfidf_model.json || true && npm run setup",
+        "start": "node src/start.js"
+    },
+    "dependencies": {
+        "better-sqlite3": "^12.4.1",
+        "prettier": "^3.6.2"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.1",
+        "eslint": "^9.39.1",
+        "globals": "^16.5.0"
+    }
 }

@@ -14,7 +14,7 @@ import { OLLAMA_MODEL, OLLAMA_URL } from './config.js'
  * @returns {Promise<string>} The synthesized natural language answer.
  */
 export async function synthesizeAnswer(query, context, finalPrompt) {
-    console.log('\n-> 3. Synthesizing Final Answer (via Ollama)...')
+    console.log('Synthesizing Final Answer (via Ollama)...')
 
     //TODO: maybe externalize these System instruction for the synthesis LLM call
     const systemInstruction = `You are a helpful security assistant. Your job is to answer the user's original question based ONLY on the provided

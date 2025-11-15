@@ -4,8 +4,6 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-// TODO: severity field could be an ENUM type for better data integrity TEXT CHECK( severity IN ('CRITICAL','HIGH','MEDIUM','LOW') )
-
 export const SQL_SCHEMA = `
 -- Table of known software packages
 CREATE TABLE IF NOT EXISTS packages (
@@ -34,6 +32,7 @@ export const SQL_DATA = [
             [1, 'express', 'npm'],
             [2, 'lodash', 'npm'],
             [3, 'jackson-databind', 'maven'],
+            [4, 'log4j', 'maven'],
         ],
     },
     {
@@ -68,6 +67,16 @@ export const SQL_DATA = [
                 'CRITICAL',
                 'CVE-2023-9999',
                 'Deserialization Flaw',
+            ],
+            // log4j vulnerability: affecting a range
+            [
+                104,
+                4,
+                '2.0-beta9',
+                '2.15.0',
+                'CRITICAL',
+                'CVE-2021-44228',
+                'Zero-day vulnerability allowing remote code execution',
             ],
         ],
     },

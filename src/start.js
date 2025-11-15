@@ -70,13 +70,14 @@ async function cli() {
     const rl = readline.createInterface({ input, output })
 
     while (true) {
-        const query = await rl.question('\nEnter a question (or type "exit"): ')
+        let query = await rl.question('\nEnter a question (or type "exit"): ')
         if (query.toLowerCase() === 'exit') {
             rl.close()
             break
         }
-        if (query.trim()) {
-            await runHybridQuery(query.trim())
+        query = query.trim()
+        if (query) {
+            await runHybridQuery(db, query)
         }
     }
 
