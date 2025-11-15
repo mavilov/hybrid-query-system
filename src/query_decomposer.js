@@ -4,8 +4,8 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { OLLAMA_MODEL, OLLAMA_URL } from "./config.js";
-import { setTimeout } from "timers/promises";
+import { OLLAMA_MODEL, OLLAMA_URL } from './config.js'
+import { setTimeout } from 'timers/promises'
 
 // TODO: systemInstruction could be externalized to a separate file for easier maintenance
 // TODO: systemInstruction could be parameterized for different database schemas or retrieval types
@@ -16,10 +16,10 @@ import { setTimeout } from "timers/promises";
  * @returns {Promise<object>} Parsed JSON response from the LLM.
  */
 export async function decomposeQuery(query) {
-  console.log("Calling Ollama LLM for Query Decomposition and Planning...");
+    console.log('Calling Ollama LLM for Query Decomposition and Planning...')
 
-  // The system instruction defines the role and the exact JSON output format
-  const systemInstruction = `You are a sophisticated hybrid query router for a vulnerability database. Your task is
+    // The system instruction defines the role and the exact JSON output format
+    const systemInstruction = `You are a sophisticated hybrid query router for a vulnerability database. Your task is
    to analyze a user's question and plan the exact data retrieval steps required. The retrieval system has two sources:
 1. SQL: A database with:
     - packages (package_id, name, repository)
@@ -42,81 +42,81 @@ Required JSON Schema:
 }
 
 You must respond ONLY with the JSON object. Do not include any explanation or markdown formatting.
-`;
+`
 
-  const fullPrompt = `${systemInstruction}\n\nUser question to decompose: "${query}"`;
+    const fullPrompt = `${systemInstruction}\n\nUser question to decompose: "${query}"`
 
-  const ollamaRequestPayload = {
-    model: OLLAMA_MODEL,
-    prompt: fullPrompt,
-    stream: false,
-    format: "json",
-    options: {
-      temperature: 0.0, // Ensure deterministic planning
-    },
-  };
-
-  let attempt = 0;
-  const maxRetries = 3;
-
-  while (attempt < maxRetries) {
-    try {
-      const response = await fetch(OLLAMA_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ollamaRequestPayload),
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          // TODO: use HTTP status code constant
-          throw new Error(`Rate limit exceeded. Retrying...`);
-        }
-        const errorBody = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}. Body: ${errorBody}`
-        );
-      }
-
-      const result = await response.json();
-      const jsonText = result.response;
-
-      if (!jsonText) {
-        throw new Error("Ollama response was empty or malformed.");
-      }
-
-      // The model is instructed to return *only* JSON, so we parse it directly.
-      // Note: Some models wrap the JSON in ```json...``` even when asked not to. We must clean this.
-      let cleanedJsonText = jsonText.trim();
-      if (cleanedJsonText.startsWith("```json")) {
-        // TODO: consider regex for more robust cleaning or maybe skipping outside of { and }
-        cleanedJsonText = cleanedJsonText.substring(
-          7,
-          cleanedJsonText.lastIndexOf("```")
-        );
-      }
-      if (cleanedJsonText.startsWith("```")) {
-        cleanedJsonText = cleanedJsonText.substring(
-          3,
-          cleanedJsonText.lastIndexOf("```")
-        );
-      }
-
-      return JSON.parse(cleanedJsonText.trim());
-    } catch (error) {
-      attempt++;
-      console.error(
-        `LLM Decomposition Attempt ${attempt} failed: ${error.message}`
-      );
-      if (attempt < maxRetries) {
-        await setTimeout(1000); // We don't need an exponential backoff with the local Ollama server
-        console.log("Retrying...");
-      } else {
-        console.error(
-          "Failed to decompose query after multiple retries. Check if Ollama is running and the model is downloaded."
-        );
-        return null; // TODO: consider throwing an error instead or returning status object
-      }
+    const ollamaRequestPayload = {
+        model: OLLAMA_MODEL,
+        prompt: fullPrompt,
+        stream: false,
+        format: 'json',
+        options: {
+            temperature: 0.0, // Ensure deterministic planning
+        },
     }
-  }
+
+    let attempt = 0
+    const maxRetries = 3
+
+    while (attempt < maxRetries) {
+        try {
+            const response = await fetch(OLLAMA_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ollamaRequestPayload),
+            })
+
+            if (!response.ok) {
+                if (response.status === 429) {
+                    // TODO: use HTTP status code constant
+                    throw new Error(`Rate limit exceeded. Retrying...`)
+                }
+                const errorBody = await response.text()
+                throw new Error(
+                    `HTTP error! status: ${response.status}. Body: ${errorBody}`
+                )
+            }
+
+            const result = await response.json()
+            const jsonText = result.response
+
+            if (!jsonText) {
+                throw new Error('Ollama response was empty or malformed.')
+            }
+
+            // The model is instructed to return *only* JSON, so we parse it directly.
+            // Note: Some models wrap the JSON in ```json...``` even when asked not to. We must clean this.
+            let cleanedJsonText = jsonText.trim()
+            if (cleanedJsonText.startsWith('```json')) {
+                // TODO: consider regex for more robust cleaning or maybe skipping outside of { and }
+                cleanedJsonText = cleanedJsonText.substring(
+                    7,
+                    cleanedJsonText.lastIndexOf('```')
+                )
+            }
+            if (cleanedJsonText.startsWith('```')) {
+                cleanedJsonText = cleanedJsonText.substring(
+                    3,
+                    cleanedJsonText.lastIndexOf('```')
+                )
+            }
+
+            return JSON.parse(cleanedJsonText.trim())
+        } catch (error) {
+            attempt++
+            console.error(
+                `LLM Decomposition Attempt ${attempt} failed: ${error.message}`
+            )
+            if (attempt < maxRetries) {
+                await setTimeout(1000) // We don't need an exponential backoff with the local Ollama server
+                console.log('Retrying...')
+            } else {
+                console.error(
+                    'Failed to decompose query after multiple retries. Check if Ollama is running and the model is downloaded.'
+                )
+                return null // TODO: consider throwing an error instead or returning status object
+            }
+        }
+    }
 }
