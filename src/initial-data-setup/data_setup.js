@@ -4,99 +4,99 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import Database from "better-sqlite3";
-import * as fs from "node:fs";
-import { SQL_SCHEMA, SQL_DATA } from "./structured.js";
-import { CORPUS } from "./unstructured.js";
-import { SQLITE_DB_PATH, TFIDF_MODEL_PATH } from "../config.js";
-import { generateTfIdfModel } from "../tfidf_model.js";
+import Database from 'better-sqlite3'
+import * as fs from 'node:fs'
+import { SQL_SCHEMA, SQL_DATA } from './structured.js'
+import { CORPUS } from './unstructured.js'
+import { SQLITE_DB_PATH, TFIDF_MODEL_PATH } from '../config.js'
+import { generateTfIdfModel } from '../tfidf_model.js'
 
 const _insertData = (db) => {
-  SQL_DATA.forEach(({ table, data }) => {
-    console.log(`Inserting data into ${table}...`);
-    let columns;
+    SQL_DATA.forEach(({ table, data }) => {
+        console.log(`Inserting data into ${table}...`)
+        let columns
 
-    if (table === "packages") {
-      columns = "(package_id, name, repository)";
-    } else if (table === "vulnerabilities") {
-      columns =
-        "(vuln_id, package_id, version_start, version_end, severity, cve_id, summary)";
-    } else {
-      console.error(`Unknown table: ${table}`);
-      return;
-    }
+        if (table === 'packages') {
+            columns = '(package_id, name, repository)'
+        } else if (table === 'vulnerabilities') {
+            columns =
+                '(vuln_id, package_id, version_start, version_end, severity, cve_id, summary)'
+        } else {
+            console.error(`Unknown table: ${table}`)
+            return
+        }
 
-    const values = data[0].map(() => "?").join(", ");
-    const insert = db.prepare(
-      `INSERT INTO ${table} ${columns} VALUES (${values})`
-    );
+        const values = data[0].map(() => '?').join(', ')
+        const insert = db.prepare(
+            `INSERT INTO ${table} ${columns} VALUES (${values})`
+        )
 
-    data.forEach((row) => {
-      try {
-        insert.run(...row);
-      } catch (e) {
-        console.error(`Error inserting row into ${table}: ${e.message}`);
-      }
-    });
-  });
-  console.log("Data insertion complete.");
-};
+        data.forEach((row) => {
+            try {
+                insert.run(...row)
+            } catch (e) {
+                console.error(`Error inserting row into ${table}: ${e.message}`)
+            }
+        })
+    })
+    console.log('Data insertion complete.')
+}
 
 const _setupDatabase = (db) => {
-  db.exec(SQL_SCHEMA);
-  console.log("Schema created/verified.");
+    db.exec(SQL_SCHEMA)
+    console.log('Schema created/verified.')
 
-  // Check if data already exists and skip insertion if so. Database file can be deleted and recreated if needed.
-  const packageCount = db.prepare("SELECT COUNT(*) FROM packages").get()[
-    "COUNT(*)"
-  ];
+    // Check if data already exists and skip insertion if so. Database file can be deleted and recreated if needed.
+    const packageCount = db.prepare('SELECT COUNT(*) FROM packages').get()[
+        'COUNT(*)'
+    ]
 
-  if (packageCount !== 0) {
-    console.log("Database already contains data. Skipping insertion.");
-    return;
-  }
-  _insertData(db);
-};
+    if (packageCount !== 0) {
+        console.log('Database already contains data. Skipping insertion.')
+        return
+    }
+    _insertData(db)
+}
 
 const _saveTfIdfModel = (model) => {
-  const modelJson = JSON.stringify(model, null, 2);
-  fs.writeFileSync(TFIDF_MODEL_PATH, modelJson, "utf-8");
-  console.log("TF-IDF model generated and saved successfully.");
-  console.log(`Vocabulary size: ${Object.keys(model.vocabulary).length}`);
-  console.log(`Corpus size: ${model.corpus.length}`);
-};
+    const modelJson = JSON.stringify(model, null, 2)
+    fs.writeFileSync(TFIDF_MODEL_PATH, modelJson, 'utf-8')
+    console.log('TF-IDF model generated and saved successfully.')
+    console.log(`Vocabulary size: ${Object.keys(model.vocabulary).length}`)
+    console.log(`Corpus size: ${model.corpus.length}`)
+}
 
-const setupSructuredData = () => {
-  console.log("Setting up SQLite Database...");
-  const db = new Database(SQLITE_DB_PATH);
-  _setupDatabase(db);
-  db.close();
-  console.log(
-    `SQLite Database setup complete. Database file: ${SQLITE_DB_PATH}\n`
-  );
-};
+const setupStructuredData = () => {
+    console.log('Setting up SQLite Database...')
+    const db = new Database(SQLITE_DB_PATH)
+    _setupDatabase(db)
+    db.close()
+    console.log(
+        `SQLite Database setup complete. Database file: ${SQLITE_DB_PATH}\n`
+    )
+}
 
 const setupUnstructuredData = () => {
-  console.log(`Generating and saving TF-IDF Model...`);
-  const model = generateTfIdfModel(CORPUS);
-  _saveTfIdfModel(model);
-  console.log(
-    `TF-IDF Model saved successfully. Model file: ${TFIDF_MODEL_PATH}\n`
-  );
-};
+    console.log(`Generating and saving TF-IDF Model...`)
+    const model = generateTfIdfModel(CORPUS)
+    _saveTfIdfModel(model)
+    console.log(
+        `TF-IDF Model saved successfully. Model file: ${TFIDF_MODEL_PATH}\n`
+    )
+}
 
 const printInstructions = () => {
-  console.log("Setup Complete! The system is ready to run.");
-  console.log("Next step: try `npm run start` to start the query router.");
-  console.log(
-    'Or run a single query: `node src/start.js "What vulnerabilities does the package express have?"`'
-  );
-};
+    console.log('Setup Complete! The system is ready to run.')
+    console.log('Next step: try `npm run start` to start the query router.')
+    console.log(
+        'Or run a single query: `node src/start.js "What vulnerabilities does the package express have?"`'
+    )
+}
 
 const main = () => {
-  setupSructuredData();
-  setupUnstructuredData();
-  printInstructions();
-};
+    setupStructuredData()
+    setupUnstructuredData()
+    printInstructions()
+}
 
-main();
+main()
