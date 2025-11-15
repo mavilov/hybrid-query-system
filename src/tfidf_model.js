@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'node:fs'
-import { TFIDF_PATH } from './config.js'
+import { TFIDF_MODEL_PATH } from './config.js'
 
 //TODO: this is a mess now and needs refactoring for readability and maintainability
 
@@ -180,15 +180,15 @@ function queryToVector(queryText, model) {
  * @returns {{text: string, score: number}[]} Array of ranked results.
  */
 export function vectorSearch(queryText, topK = 3) {
-    if (!fs.existsSync(TFIDF_PATH)) {
+    if (!fs.existsSync(TFIDF_MODEL_PATH)) {
         console.error(
-            `Error: TF-IDF model file not found at ${TFIDF_PATH}. Did you run 'npm run setup'?`
+            `Error: TF-IDF model file not found at ${TFIDF_MODEL_PATH}. Did you run 'npm run setup'?`
         )
         return []
     }
 
     // Load the model from the file system
-    const modelJson = fs.readFileSync(TFIDF_PATH, 'utf-8')
+    const modelJson = fs.readFileSync(TFIDF_MODEL_PATH, 'utf-8')
     const model = JSON.parse(modelJson)
 
     // Vectorize the query
