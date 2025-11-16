@@ -2,6 +2,8 @@
 
 _See the original assignment PDF under `docs` folder._
 
+![Snyk Company logo that I downloaded from seeklogo.com.](snyk-seeklogo.svg)
+
 ## Objective
 
 We'd like you to design and implement a system that can answer user questions by intelligently querying both a structured database (SQL) and an unstructured text corpus (via vector search). The key challenge is to do this without relying on existing LLM frameworks like Langchain, LlamaIndex, etc. You will need to implement the core logic for query understanding, decomposition, data retrieval, and answer synthesis.

@@ -6,10 +6,10 @@ This document describes the actual architecture implemented in the repository as
 
 - CLI entrypoint: `src/start.js` — parses CLI args and boots an App instance.
 - Application core: `src/App.js` — encapsulates lifecycle: DB init/close, single-query execution, interactive loop, and orchestration of query processing.
-- Query planner / decomposer: `src/query_decomposer.js` — calls the local Ollama service to classify a user question as `SQL`, `VECTOR`, or `HYBRID` and to produce a small JSON plan (sqlQuery, vectorSearchTerm, finalAnswerPrompt).
+- Query planner / decomposer: `src/query_decomposer/ollama.js` — calls the local Ollama service to classify a user question as `SQL`, `VECTOR`, or `HYBRID` and to produce a small JSON plan (sqlQuery, vectorSearchTerm, finalAnswerPrompt).
 - Hybrid executor: (implemented as a module referenced by `App`) — runs SQL queries against SQLite and vector lookups against the TF‑IDF model, then synthesizes results per `finalAnswerPrompt`.
 - Structured data setup: `src/initial-data-setup/data_setup.js` (uses `src/initial-data-setup/structured.js` and `unstructured.js`) — creates SQLite schema, inserts seed data and generates TF‑IDF model file.
-- TF‑IDF model: `src/tfidf_model.js` — builds the vector index from the corpus and writes `data/tfidf_model.json`.
+- TF‑IDF model: `src/tfidf/tfidf_model.js` — builds the vector index from the corpus and writes `data/tfidf_model.json`.
 - Configuration: `src/config.js` — central constants (paths, Ollama URL/model)
 - Data files: `data/vulnerability_db.db` (SQLite) and `data/tfidf_model.json` (TF‑IDF index). They need to be generated, and must not be committed to git.
 
@@ -23,8 +23,14 @@ The SQL schema and initial seed rows for testing live in `src/initial-data-setup
 ## Request and execution flow
 
 1. User invokes CLI:
-    - Single-query: `node src/start.js "What vulnerabilities does express have?"`
-    - Interactive: `npm run start` then prompt loop.
+    - Single-query:
+
+    ```bash
+    node src/start.js "Is axios secure? Can it be exploited? Which versions had known vulnerabilities"
+    ```
+
+    - Interactive: `npm run start` then prompt within a loop.
+
 2. `start.js` constructs `App` and initializes (validates DB file + opens connection).
 3. `App` asks `decomposeQuery(query)` to produce a deterministic plan (via Ollama).
 4. Based on plan type:
@@ -37,33 +43,81 @@ The SQL schema and initial seed rows for testing live in `src/initial-data-setup
 
 - Dependency injection and encapsulation: `App` class isolates side effects (DB, readline, runner) to make unit testing easier.
 - External services are isolated:
-    - Ollama (local API) is called only from `query_decomposer.js` and can be mocked during tests.
+    - Ollama (local API) is called only from `query_decomposer/ollama.js` and can be mocked during tests.
     - TF‑IDF index is read from disk (`data/tfidf_model.json`) for vector lookup.
 - TODO: Tests use Node.js built-in test runner (`node --test`) and mock external I/O (DB, file system, Ollama) to provide fast deterministic tests.
 
 ## Operational considerations and security
 
-- TODO: The Ollama endpoint could be made configurable via env (`OLLAMA_URL`) in the future to avoid hardcoding network targets.
 - Seed and model generation are explicit: run `npm run setup` to create/update data files.
-- TODO: Follow the project's Snyk policy: run snyk code scan for any generated or modified code and remediate findings before committing.
-
-## Invocation examples
-
-Single query:
-
-```bash
-node src/start.js "What vulnerabilities does the package express have?"
-```
-
-Interactive:
-
-```bash
-npm run start
-# then follow the prompt, type `exit` to quit
-```
+- Snyk code scan flags one place as problematic that I chose to ignore so I can mention it
 
 ## Why this structure?
 
-- Clear separation between decomposition/planning (LLM), execution (SQL/vector), and orchestration (App) keeps responsibilities small and testable.
+My thinking regarding what to present, considering that I have only 4 calendar days with very limited availability. What is important and what are tradeoffs.
+
+- Clear separation between decomposition/planning (LLM), execution (SQL/vector), answer generation, and orchestration (App) keeps responsibilities small and testable.
 - Using SQLite + a small TF‑IDF index is lightweight and reproducible for the assignment scope.
 - The App class and DI-friendly modules support unit tests and make the CLI ergonomics straightforward.
+- `package.json` - yes, but no module/cli generation as npm does its job
+- Linting from day 1 with _ESLint_
+- pretty formatting from day 1 with _Prettier_
+- No frameworks for the core task, but look - I can use libraries! `better-sqlite3`, `https-status-code` imported just because of one code! Not too much waste, but a demonstration
+- Markdown documents to state assumptions, as well as to document my reasoning and avoid stress/rush.
+
+Not specific to any components I mention below, following improvements could be potentially made if I'd have a few more full days.
+
+- add more unit tests
+- add e2e test involving Ollama
+- Docker to fix the enviromnent, especially for e2e testing in GitHub
+- Maybe use TypeScript, but what's the value here
+- Go full-blown with no LLM for misc tasks, but as I mentioned, no time to do it any good
+- make an endpoint
+- write simple UI
+- test everything in isolation as well as e2e
+
+### Query decomposition
+
+Calling LLM for query decomposition is fine, so I went this way. At first, I used Gemini and faced its rate limiting pretty soon. This is a risk for my interview, I really need something that I can control better. Next try was Ollama and it worked well so far. I decided not to use any proxy libraries like LangChain and make decomposition just work.
+
+#### Improvement ideas
+
+- LangChain could be of a help to transition to something better. One could write tools to do custom query parsing, but that is not a trivial task.
+- Doing multiple pattern searches could lead to unmanageable mess pretty fast for this test assignment.
+
+### Query runner
+
+No compromise here, I need to demonstrate that:
+
+- I am capable of writing a code that can execute SELECT statements against SQLite.
+- I understand how [TF-IDF](https://en.wikipedia.org/wiki/Tf–idf) works and I can calculate embeddings and perform vector searches.
+
+I am new to implementing vector search myself. I can spend the majority of the time with this and will play in a less familiar field. However, that needs to be implemented, no matter what, and it has to work.
+
+#### Improvement ideas
+
+- ~~just use MongoDB Atlas~~
+- read about and apply more advanced algorythm. I observed that for Hybrid searches somehow _express_ is different from _Express.js_ and _expressjs_.
+- Maybe ORM could be of some help (bells and whistles for this task)
+
+### Answer generation
+
+### Data loading
+
+Data can be loaded from static, hardcoded sources into a database (.db file) and embeddings file (.json file) with this command
+
+```bash
+npm run setup
+```
+
+and generated files can be removed and regenerated with
+
+```bash
+npm run resetData
+```
+
+#### Improvement ideas
+
+- CSV file for loading into SQL database. Handy to update.
+- read files with unstructured data from local fs
+- crawl [Snyk](https://security.snyk.io/vuln/) and / or similar sites
