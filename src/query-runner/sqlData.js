@@ -53,7 +53,7 @@ const formatResults = (rows) => {
         const severity = String(row.severity ?? 'N/A')
         const cve = String(row.cve_id ?? 'N/A')
         const versions = `${row.version_start ?? 'N/A'} to ${row.version_end ?? 'N/A'}`
-        let summary = String(row.summary ?? 'N/A').trim()
+        let summary = String(row.summary ?? 'N/A')
         const SUMMARY_MAX = 50
         if (summary.length > SUMMARY_MAX) {
             summary = summary.slice(0, SUMMARY_MAX - 1) + '…'
