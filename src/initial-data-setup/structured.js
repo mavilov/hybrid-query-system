@@ -33,6 +33,7 @@ export const SQL_DATA = [
             [2, 'lodash', 'npm'],
             [3, 'jackson-databind', 'maven'],
             [4, 'log4j', 'maven'],
+            [5, 'axios', 'npm'],
         ],
     },
     {
@@ -61,6 +62,19 @@ export const SQL_DATA = [
                 'CRITICAL',
                 'CVE-2021-44228',
                 'Zero-day vulnerability allowing remote code execution',
+            ],
+            // axios vulnerabilities: affecting a range
+            [105, 5, '0.21.0', '0.21.1', 'HIGH', 'CVE-2023-2001', 'Server-Side Request Forgery'],
+            [106, 5, '0.18.0', '0.21.0', 'MEDIUM', 'CVE-2022-3001', 'Denial of Service'],
+            [107, 5, '0.19.0', '0.19.2', 'LOW', 'CVE-2021-1234', 'Information Exposure'],
+            [
+                108,
+                5,
+                '1.11.0',
+                '1.11.2',
+                'HIGH',
+                'CVE-2024-3002',
+                'Allocation of Resources Without Limits or Throttling',
             ],
         ],
     },
