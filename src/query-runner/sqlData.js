@@ -22,7 +22,7 @@ export const retrieveSqlData = (db, sql) => {
 
             const formattedResult = formatResults(rows)
 
-            return `SQL Results (Vulnerabilities): [${formattedResult}]`
+            return `SQL Results (Vulnerabilities): \n${formattedResult}\n`
         } else {
             const err = `SQL operation blocked (Non-SELECT query generated).`
             console.error(err)
@@ -39,17 +39,43 @@ const isSelectQuery = (sql) => {
 }
 
 /**
- * Formats returned rows into a readable string.
- *
- * TODO: somehow better format results into a readable string
+ * Formats returned rows into a readable table.
  *
  * @param {*} rows - The rows returned from the SQL query.
- * @returns {string} The formatted results as a string.
+ * @returns {string} The formatted tabular results as a string.
  */
-const formatResults = (rows) =>
-    rows
-        .map(
-            (row) =>
-                `Package: ${row.name || 'N/A'} | Severity: ${row.severity || 'N/A'} | CVE: ${row.cve_id || 'N/A'} | Versions: ${row.version_start} to ${row.version_end} | Summary: ${row.summary}`
-        )
-        .join(' | ')
+const formatResults = (rows) => {
+    const headers = ['Package', 'Severity', 'CVE', 'Versions', 'Summary']
+
+    // Prepare rows as arrays of string values, apply sensible defaults
+    const rowValues = rows.map((row) => {
+        const name = String(row.name ?? 'N/A')
+        const severity = String(row.severity ?? 'N/A')
+        const cve = String(row.cve_id ?? 'N/A')
+        const versions = `${row.version_start ?? 'N/A'} to ${row.version_end ?? 'N/A'}`
+        let summary = String(row.summary ?? 'N/A').trim()
+        const SUMMARY_MAX = 50
+        if (summary.length > SUMMARY_MAX) {
+            summary = summary.slice(0, SUMMARY_MAX - 1) + '…'
+        }
+        return [name, severity, cve, versions, summary]
+    })
+
+    // Compute column widths (take max of header and each column's values)
+    const colWidths = headers.map((h, colIdx) => {
+        const maxInColumn = rowValues.reduce((max, vals) => {
+            return Math.max(max, String(vals[colIdx] ?? '').length)
+        }, h.length)
+        return Math.max(h.length, maxInColumn)
+    })
+
+    // Helper to pad a cell to column width
+    const pad = (text, width) => String(text).padEnd(width)
+
+    // Build table string
+    const headerLine = headers.map((h, i) => pad(h, colWidths[i])).join(' | ')
+    const dividerLine = colWidths.map((w) => '-'.repeat(w)).join('-+-')
+    const dataLines = rowValues.map((vals) => vals.map((v, i) => pad(v, colWidths[i])).join(' | '))
+
+    return [headerLine, dividerLine, ...dataLines].join('\n')
+}
