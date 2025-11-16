@@ -14,13 +14,13 @@ export const retrieveSqlData = (db, sql) => {
     try {
         const statement = db.prepare(sql)
 
-        if (_isSelectQuery(sql)) {
+        if (isSelectQuery(sql)) {
             const rows = statement.all()
             if (rows.length === 0) {
                 return 'No matching data found in the SQL database for this package.'
             }
 
-            const formattedResult = _formatResults(rows)
+            const formattedResult = formatResults(rows)
 
             return `SQL Results (Vulnerabilities): [${formattedResult}]`
         } else {
@@ -34,7 +34,7 @@ export const retrieveSqlData = (db, sql) => {
     }
 }
 
-const _isSelectQuery = (sql) => {
+const isSelectQuery = (sql) => {
     return sql.trim().toUpperCase().startsWith('SELECT')
 }
 
@@ -46,7 +46,7 @@ const _isSelectQuery = (sql) => {
  * @param {*} rows - The rows returned from the SQL query.
  * @returns {string} The formatted results as a string.
  */
-const _formatResults = (rows) =>
+const formatResults = (rows) =>
     rows
         .map(
             (row) =>
