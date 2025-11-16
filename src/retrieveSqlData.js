@@ -9,24 +9,18 @@
  * @param {string} sql - The SQL query to run.
  * @returns {string} The formatted results as a string.
  */
-export function retrieveSqlData(db, sql) {
+export const retrieveSqlData = (db, sql) => {
     console.log(`Executing SQL: ${sql}`)
     try {
         const statement = db.prepare(sql)
 
-        // Check if the query is a SELECT query
-        if (sql.trim().toUpperCase().startsWith('SELECT')) {
+        if (_isSelectQuery(sql)) {
             const rows = statement.all()
-            if (rows.length === 0)
+            if (rows.length === 0) {
                 return 'No matching data found in the SQL database for this package.'
+            }
 
-            // TODO: somehow better format results into a readable string
-            const formattedResult = rows
-                .map(
-                    (row) =>
-                        `Package: ${row.name || 'N/A'} | Severity: ${row.severity || 'N/A'} | CVE: ${row.cve_id || 'N/A'} | Versions: ${row.version_start} to ${row.version_end} | Summary: ${row.summary}`
-                )
-                .join(' | ')
+            const formattedResult = _formatResults(rows)
 
             return `SQL Results (Vulnerabilities): [${formattedResult}]`
         } else {
@@ -39,3 +33,23 @@ export function retrieveSqlData(db, sql) {
         return `SQL execution failed: ${e.message}`
     }
 }
+
+const _isSelectQuery = (sql) => {
+    return sql.trim().toUpperCase().startsWith('SELECT')
+}
+
+/**
+ * Formats returned rows into a readable string.
+ *
+ * TODO: somehow better format results into a readable string
+ *
+ * @param {*} rows - The rows returned from the SQL query.
+ * @returns {string} The formatted results as a string.
+ */
+const _formatResults = (rows) =>
+    rows
+        .map(
+            (row) =>
+                `Package: ${row.name || 'N/A'} | Severity: ${row.severity || 'N/A'} | CVE: ${row.cve_id || 'N/A'} | Versions: ${row.version_start} to ${row.version_end} | Summary: ${row.summary}`
+        )
+        .join(' | ')

@@ -4,6 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
+//TODO: maybe load from external files instead of hardcoding here
 export const CORPUS = [
     'A detailed advisory for CVE-2024-001 affecting Node.js packages: The issue is a Cross-Site Scripting (XSS) vulnerability found in version 5.0.0-beta.2, which allows remote attackers to inject arbitrary web script or HTML via specific headers. Users should upgrade to 5.1.0 immediately.',
     'High severity vulnerability in Lodash (Prototype Pollution advisory): Affects versions up to 4.17.20. This allows an attacker to add or modify properties of the Object prototype, potentially leading to denial-of-service or remote code execution. Mitigation requires updating to 4.17.21 or later.',

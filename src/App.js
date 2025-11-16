@@ -9,11 +9,7 @@ import * as fs from 'node:fs'
 import Database from 'better-sqlite3'
 
 export class App {
-    constructor({
-        dbPath,
-        dbFactory = (p, opts) => new Database(p, opts),
-        fsModule = fs,
-    }) {
+    constructor({ dbPath, dbFactory = (p, opts) => new Database(p, opts), fsModule = fs }) {
         this.dbPath = dbPath
         this.dbFactory = dbFactory
         this.fs = fsModule
@@ -35,9 +31,7 @@ export class App {
         return 0
     }
 
-    async runInteractive(
-        io = { input: process.stdin, output: process.stdout, question: null }
-    ) {
+    async runInteractive(io = { input: process.stdin, output: process.stdout, question: null }) {
         if (!this.db) throw new Error('Database not initialized')
 
         let rl
@@ -54,9 +48,7 @@ export class App {
         try {
             this.printInstructions()
             while (true) {
-                const q = await rl.question(
-                    '\nEnter a question (or type "exit"): '
-                )
+                const q = await rl.question('\nEnter a question (or type "exit"): ')
                 if (q.trim().toLowerCase() === 'exit') break
                 if (q.trim()) await runHybridQuery(this.db, q.trim())
             }
@@ -64,6 +56,7 @@ export class App {
             rl.close?.()
         }
     }
+
     printInstructions() {
         const instructions = `
 Welcome to the Hybrid Vulnerability Query System.

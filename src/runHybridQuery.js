@@ -4,7 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { decomposeQuery } from './query_decomposer.js'
+import { decomposeQuery } from './query-decomposer/ollama.js'
 import { retrieveSqlData } from './retrieveSqlData.js'
 import { retrieveVectorData } from './retrieveVectorData.js'
 import { synthesizeAnswer } from './synthesizeAnswer.js'
@@ -17,8 +17,7 @@ export async function runHybridQuery(db, query) {
     const decomposition = await decomposeQuery(query)
     if (!decomposition) return
 
-    const { type, sqlQuery, vectorSearchTerm, finalAnswerPrompt } =
-        decomposition
+    const { type, sqlQuery, vectorSearchTerm, finalAnswerPrompt } = decomposition
     let context = ''
     let sqlResult = ''
     let vectorResult = ''
@@ -46,30 +45,12 @@ export async function runHybridQuery(db, query) {
     }
 
     // 3. Synthesis Step
-    const finalAnswer = await synthesizeAnswer(
-        query,
-        context,
-        finalAnswerPrompt
-    )
+    const finalAnswer = await synthesizeAnswer(query, context, finalAnswerPrompt)
 
-    _printFinalAnswer(
-        finalAnswer,
-        query,
-        type,
-        sqlQuery,
-        vectorSearchTerm,
-        context
-    )
+    _printFinalAnswer(finalAnswer, query, type, sqlQuery, vectorSearchTerm, context)
 }
 
-function _printFinalAnswer(
-    answer,
-    query,
-    type,
-    sqlQuery,
-    vectorSearchTerm,
-    context
-) {
+function _printFinalAnswer(answer, query, type, sqlQuery, vectorSearchTerm, context) {
     console.log('\n=================================================')
     console.log(`USER QUESTION: ${query}`)
     console.log(

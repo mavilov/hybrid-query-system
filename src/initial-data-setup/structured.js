@@ -49,25 +49,9 @@ export const SQL_DATA = [
                 'Cross-site Scripting/Open Redirect',
             ],
             // lodash vulnerability: affecting a range
-            [
-                102,
-                2,
-                '4.17.0',
-                '4.17.20',
-                'HIGH',
-                'CVE-2023-1001',
-                'Prototype Pollution',
-            ],
+            [102, 2, '4.17.0', '4.17.20', 'HIGH', 'CVE-2023-1001', 'Prototype Pollution'],
             // jackson-databind vulnerability: affecting a range
-            [
-                103,
-                3,
-                '2.0.0',
-                '2.15.0',
-                'CRITICAL',
-                'CVE-2023-9999',
-                'Deserialization Flaw',
-            ],
+            [103, 3, '2.0.0', '2.15.0', 'CRITICAL', 'CVE-2023-9999', 'Deserialization Flaw'],
             // log4j vulnerability: affecting a range
             [
                 104,

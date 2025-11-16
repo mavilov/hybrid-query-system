@@ -17,9 +17,7 @@ import { TFIDF_MODEL_PATH } from './config.js'
  */
 function tokenize(text) {
     // Simple preprocessing: lowercase and remove non-word characters except spaces
-    const cleanText = text
-        .toLowerCase()
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
+    const cleanText = text.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
     // Split by whitespace and filter out empty strings
     return cleanText.split(/\s+/).filter((token) => token.length > 0)
 }
@@ -51,10 +49,7 @@ export function generateTfIdfModel(corpus) {
         documentTermCounts.push(docCounts)
 
         uniqueTokens.forEach((token) => {
-            documentFrequency.set(
-                token,
-                (documentFrequency.get(token) || 0) + 1
-            )
+            documentFrequency.set(token, (documentFrequency.get(token) || 0) + 1)
         })
     })
 
@@ -113,11 +108,7 @@ const vectorMath = {
      */
     dotProduct: (vecA, vecB) => {
         if (vecA.length !== vecB.length) {
-            console.warn(
-                'Vector length mismatch in dot product!',
-                vecA.length,
-                vecB.length
-            )
+            console.warn('Vector length mismatch in dot product!', vecA.length, vecB.length)
             return 0
         }
         return vecA.reduce((sum, val, i) => sum + val * vecB[i], 0)

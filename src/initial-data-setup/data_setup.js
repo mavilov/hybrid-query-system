@@ -11,6 +11,19 @@ import { CORPUS } from './unstructured.js'
 import { SQLITE_DB_PATH, TFIDF_MODEL_PATH } from '../config.js'
 import { generateTfIdfModel } from '../tfidf_model.js'
 
+const _insertAllRows = (db, table, columns, data) => {
+    const values = data[0].map(() => '?').join(', ')
+    const insert = db.prepare(`INSERT INTO ${table} ${columns} VALUES (${values})`)
+
+    data.forEach((row) => {
+        try {
+            insert.run(...row)
+        } catch (e) {
+            console.error(`Error inserting row into ${table}: ${e.message}`)
+        }
+    })
+}
+
 const _insertData = (db) => {
     SQL_DATA.forEach(({ table, data }) => {
         console.log(`Inserting data into ${table}...`)
@@ -19,25 +32,13 @@ const _insertData = (db) => {
         if (table === 'packages') {
             columns = '(package_id, name, repository)'
         } else if (table === 'vulnerabilities') {
-            columns =
-                '(vuln_id, package_id, version_start, version_end, severity, cve_id, summary)'
+            columns = '(vuln_id, package_id, version_start, version_end, severity, cve_id, summary)'
         } else {
             console.error(`Unknown table: ${table}`)
             return
         }
 
-        const values = data[0].map(() => '?').join(', ')
-        const insert = db.prepare(
-            `INSERT INTO ${table} ${columns} VALUES (${values})`
-        )
-
-        data.forEach((row) => {
-            try {
-                insert.run(...row)
-            } catch (e) {
-                console.error(`Error inserting row into ${table}: ${e.message}`)
-            }
-        })
+        _insertAllRows(db, table, columns, data)
     })
     console.log('Data insertion complete.')
 }
@@ -47,9 +48,7 @@ const _setupDatabase = (db) => {
     console.log('Schema created/verified.')
 
     // Check if data already exists and skip insertion if so. Database file can be deleted and recreated if needed.
-    const packageCount = db.prepare('SELECT COUNT(*) FROM packages').get()[
-        'COUNT(*)'
-    ]
+    const packageCount = db.prepare('SELECT COUNT(*) FROM packages').get()['COUNT(*)']
 
     if (packageCount !== 0) {
         console.log('Database already contains data. Skipping insertion.')
@@ -71,26 +70,22 @@ const setupStructuredData = () => {
     const db = new Database(SQLITE_DB_PATH)
     _setupDatabase(db)
     db.close()
-    console.log(
-        `SQLite Database setup complete. Database file: ${SQLITE_DB_PATH}\n`
-    )
+    console.log(`SQLite Database setup complete. Database file: ${SQLITE_DB_PATH}\n`)
 }
 
 const setupUnstructuredData = () => {
     console.log(`Generating and saving TF-IDF Model...`)
     const model = generateTfIdfModel(CORPUS)
     _saveTfIdfModel(model)
-    console.log(
-        `TF-IDF Model saved successfully. Model file: ${TFIDF_MODEL_PATH}\n`
-    )
+    console.log(`TF-IDF Model saved successfully. Model file: ${TFIDF_MODEL_PATH}\n`)
 }
 
 const printInstructions = () => {
-    console.log('Setup Complete! The system is ready to run.')
-    console.log('Next step: try `npm run start` to start the query router.')
-    console.log(
-        'Or run a single query: `node src/start.js "What vulnerabilities does the package express have?"`'
-    )
+    const instruction = `Setup Complete! The system is ready to run.
+Next step: try \`npm run start\` to start the query router.
+Or run a single query: \`node src/start.js "What vulnerabilities does the package express have?"\``
+
+    console.log(instruction)
 }
 
 const main = () => {
