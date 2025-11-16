@@ -4,10 +4,10 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { decomposeQuery } from './query-decomposer/ollama.js'
-import { retrieveSqlData } from './retrieveSqlData.js'
-import { retrieveVectorData } from './retrieveVectorData.js'
-import { synthesizeAnswer } from './synthesizeAnswer.js'
+import { decomposeQuery } from '../query-decomposer/ollama.js'
+import { retrieveSqlData } from './sqlData.js'
+import { retrieveVectorData } from './vectorData.js'
+import { synthesizeAnswer } from '../answer-synthesizer/ollama.js'
 
 /**
  * Executes the full hybrid retrieval and synthesis flow.

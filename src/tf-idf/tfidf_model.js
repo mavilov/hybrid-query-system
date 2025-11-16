@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'node:fs'
-import { TFIDF_MODEL_PATH } from './config.js'
+import { TFIDF_MODEL_PATH } from '../config.js'
 
 //TODO: this is a mess now and needs refactoring for readability and maintainability
 

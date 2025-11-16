@@ -4,7 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { OLLAMA_MODEL, OLLAMA_URL } from './config.js'
+import { OLLAMA_MODEL, OLLAMA_URL } from '../config.js'
 
 /**
  * Uses the LLM to synthesize a final answer from all gathered context.

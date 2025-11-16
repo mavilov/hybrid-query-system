@@ -4,7 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { runHybridQuery } from './runHybridQuery.js'
+import { runHybridQuery } from './query-runner/hybrid.js'
 import * as fs from 'node:fs'
 import Database from 'better-sqlite3'
 

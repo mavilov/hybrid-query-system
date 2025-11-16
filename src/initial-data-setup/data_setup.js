@@ -9,7 +9,7 @@ import * as fs from 'node:fs'
 import { SQL_SCHEMA, SQL_DATA } from './structured.js'
 import { CORPUS } from './unstructured.js'
 import { SQLITE_DB_PATH, TFIDF_MODEL_PATH } from '../config.js'
-import { generateTfIdfModel } from '../tfidf_model.js'
+import { generateTfIdfModel } from '../tf-idf/tfidf_model.js'
 
 const _insertAllRows = (db, table, columns, data) => {
     const values = data[0].map(() => '?').join(', ')
