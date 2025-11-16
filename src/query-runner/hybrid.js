@@ -30,7 +30,7 @@ export const runHybridQuery = async (db, query) => {
 }
 
 const getContext = (type, db, sqlQuery, vectorSearchTerm) => {
-    let context
+    let context = ''
     let sqlResult
     let vectorResult
 
