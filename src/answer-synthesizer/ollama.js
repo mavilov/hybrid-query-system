@@ -13,7 +13,7 @@ import { OLLAMA_MODEL, OLLAMA_URL } from '../config.js'
  * @param {string} finalPrompt - Instruction from the decomposition step.
  * @returns {Promise<string>} The synthesized natural language answer.
  */
-export async function synthesizeAnswer(query, context, finalPrompt) {
+export const synthesizeAnswer = async (query, context, finalPrompt) => {
     console.log('Synthesizing Final Answer (via Ollama)...')
 
     //TODO: maybe externalize these System instruction for the synthesis LLM call

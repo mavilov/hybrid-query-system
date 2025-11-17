@@ -7,9 +7,9 @@ This document describes the actual architecture implemented in the repository as
 - CLI entrypoint: `src/start.js` — parses CLI args and boots an App instance.
 - Application core: `src/App.js` — encapsulates lifecycle: DB init/close, single-query execution, interactive loop, and orchestration of query processing.
 - Query planner / decomposer: `src/query_decomposer/ollama.js` — calls the local Ollama service to classify a user question as `SQL`, `VECTOR`, or `HYBRID` and to produce a small JSON plan (sqlQuery, vectorSearchTerm, finalAnswerPrompt).
-- Hybrid executor: (implemented as a module referenced by `App`) — runs SQL queries against SQLite and vector lookups against the TF‑IDF model, then synthesizes results per `finalAnswerPrompt`.
-- Structured data setup: `src/initial-data-setup/data_setup.js` (uses `src/initial-data-setup/structured.js` and `unstructured.js`) — creates SQLite schema, inserts seed data and generates TF‑IDF model file.
-- TF‑IDF model: `src/tfidf/tfidf_model.js` — builds the vector index from the corpus and writes `data/tfidf_model.json`.
+- Hybrid executor: `query-runner/hybrid.js` — runs SQL queries against SQLite and vector lookups against the TF‑IDF model, then synthesizes results per `finalAnswerPrompt`.
+- Structured data setup: `src/initial-data-setup/dataSetup.js` (uses `src/initial-data-setup/structured.js` and `unstructured.js`) — creates SQLite schema, inserts seed data and generates TF‑IDF model file.
+- TF‑IDF model: `src/tfidf/ModelGenerator.js` — has functions to build the vector index from the corpus and write `data/tfidf_model.json`.
 - Configuration: `src/config.js` — central constants (paths, Ollama URL/model)
 - Data files: `data/vulnerability_db.db` (SQLite) and `data/tfidf_model.json` (TF‑IDF index). They need to be generated, and must not be committed to git.
 
@@ -29,7 +29,13 @@ The SQL schema and initial seed rows for testing live in `src/initial-data-setup
     node src/start.js "Is axios secure? Can it be exploited? Which versions had known vulnerabilities"
     ```
 
-    - Interactive: `npm run start` then prompt within a loop.
+    - Interactive mode:
+
+    ```bash
+    npm run start
+    ```
+
+    then prompt within a loop.
 
 2. `start.js` constructs `App` and initializes (validates DB file + opens connection).
 3. `App` asks `decomposeQuery(query)` to produce a deterministic plan (via Ollama).
@@ -45,7 +51,8 @@ The SQL schema and initial seed rows for testing live in `src/initial-data-setup
 - External services are isolated:
     - Ollama (local API) is called only from `query_decomposer/ollama.js` and can be mocked during tests.
     - TF‑IDF index is read from disk (`data/tfidf_model.json`) for vector lookup.
-- TODO: Tests use Node.js built-in test runner (`node --test`) and mock external I/O (DB, file system, Ollama) to provide fast deterministic tests.
+- Tests use Node.js built-in test runner (`node --test`) and mock external I/O (DB, file system, Ollama) to provide fast deterministic tests.
+- TODO: Coverage report
 
 ## Operational considerations and security
 
@@ -84,6 +91,7 @@ Calling LLM for query decomposition is fine, so I went this way. At first, I use
 
 - LangChain could be of a help to transition to something better. One could write tools to do custom query parsing, but that is not a trivial task.
 - Doing multiple pattern searches could lead to unmanageable mess pretty fast for this test assignment.
+- account for misspelling (word distance calculations allowing for a single typo or N typos)
 
 ### Query runner
 

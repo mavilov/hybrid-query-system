@@ -19,12 +19,12 @@
     "type": "module",
     "main": "src/start.js",
     "scripts": {
-        "test": "node --test tests/**/*.test.js",
+        "test": "node --test tests/**/*test.js",
         "prettier:test": "prettier --check ./**/*.{js,json,md}",
         "prettier:fix": "prettier --write ./**/*.{js,json,md}",
         "lint": "eslint .",
         "develop": "node --watch src/start.js",
-        "setup": "node src/initial-data-setup/data_setup.js",
+        "setup": "node src/initial-data-setup/dataSetup.js",
         "resetData": "rm -r data/vulnerability_db.db data/tfidf_model.json || true && npm run setup",
         "start": "node src/start.js"
     },
