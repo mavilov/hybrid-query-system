@@ -52,7 +52,7 @@ The SQL schema and initial seed rows for testing live in `src/initial-data-setup
     - Ollama (local API) is called only from `query_decomposer/ollama.js` and can be mocked during tests.
     - TF‑IDF index is read from disk (`data/tfidf_model.json`) for vector lookup.
 - Tests use Node.js built-in test runner (`node --test`) and mock external I/O (DB, file system, Ollama) to provide fast deterministic tests.
-- TODO: Coverage report
+- Coverage report
 
 ## Operational considerations and security
 
