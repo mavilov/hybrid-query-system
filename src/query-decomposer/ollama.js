@@ -6,7 +6,7 @@
 
 import { OLLAMA_MODEL, OLLAMA_URL } from '../config.js'
 import { setTimeout } from 'timers/promises'
-import { systemInstruction } from './system_instruction.js'
+import { systemInstruction } from './systemInstruction.js'
 import { StatusCodes } from 'http-status-codes'
 
 /**
