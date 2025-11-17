@@ -4,13 +4,13 @@ This document describes the actual architecture implemented in the repository as
 
 ## High-level overview
 
-- CLI entrypoint: `src/start.js` — parses CLI args and boots an App instance.
-- Application core: `src/App.js` — encapsulates lifecycle: DB init/close, single-query execution, interactive loop, and orchestration of query processing.
-- Query planner / decomposer: `src/query_decomposer/ollama.js` — calls the local Ollama service to classify a user question as `SQL`, `VECTOR`, or `HYBRID` and to produce a small JSON plan (sqlQuery, vectorSearchTerm, finalAnswerPrompt).
-- Hybrid executor: `query-runner/hybrid.js` — runs SQL queries against SQLite and vector lookups against the TF‑IDF model, then synthesizes results per `finalAnswerPrompt`.
-- Structured data setup: `src/initial-data-setup/dataSetup.js` (uses `src/initial-data-setup/structured.js` and `unstructured.js`) — creates SQLite schema, inserts seed data and generates TF‑IDF model file.
-- TF‑IDF model: `src/tfidf/ModelGenerator.js` — has functions to build the vector index from the corpus and write `data/tfidf_model.json`.
-- Configuration: `src/config.js` — central constants (paths, Ollama URL/model)
+- CLI entrypoint: [`src/start.js`](../src/start.js) — parses CLI args and boots an App instance.
+- Application core: [`src/App.js`](../src/App.js) — encapsulates lifecycle: DB init/close, single-query execution, interactive loop, and orchestration of query processing.
+- Query planner / decomposer: [`src/query-decomposer/ollama.js`](../src/query-decomposer/ollama.js) — calls the local Ollama service to classify a user question as `SQL`, `VECTOR`, or `HYBRID` and to produce a small JSON plan (sqlQuery, vectorSearchTerm, finalAnswerPrompt).
+- Hybrid executor: [`query-runner/hybrid.js`](../src/query-runner/hybrid.js) — runs SQL queries against SQLite and vector lookups against the TF‑IDF model, then synthesizes results per `finalAnswerPrompt`.
+- Structured data setup: [`src/initial-data-setup/dataSetup.js`](../src/initial-data-setup/dataSetup.js) — creates SQLite schema, inserts seed data and generates TF‑IDF model file.
+- TF‑IDF model: [`src/tf-idf/ModelGenerator.js`](../src/tf-idf/ModelGenerator.js) — has functions to build the vector index from the corpus and write `data/tfidf_model.json`.
+- Configuration: [`src/config.js`](../src/config.js) — central constants (paths, Ollama URL/model)
 - Data files: `data/vulnerability_db.db` (SQLite) and `data/tfidf_model.json` (TF‑IDF index). They need to be generated, and must not be committed to git.
 
 ## Relational data model
@@ -18,7 +18,7 @@ This document describes the actual architecture implemented in the repository as
 - packages(package_id, name, repository)
 - vulnerabilities(vuln_id, package_id, version_start, version_end, severity, cve_id, summary)
 
-The SQL schema and initial seed rows for testing live in `src/initial-data-setup/structured.js`.
+The SQL schema and initial seed rows for testing live in [`src/initial-data-setup/structured.js`](../src/initial-data-setup/structured.js).
 
 ## Request and execution flow
 
