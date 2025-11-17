@@ -9,9 +9,9 @@ import * as fs from 'node:fs'
 import { SQL_SCHEMA, SQL_DATA } from './structured.js'
 import { CORPUS } from './unstructured.js'
 import { SQLITE_DB_PATH, TFIDF_MODEL_PATH } from '../config.js'
-import { generateTfIdfModel } from '../tf-idf/tfidf_model.js'
+import { ModelGenerator } from '../tf-idf/ModelGenerator.js'
 
-const _insertAllRows = (db, table, columns, data) => {
+const insertAllRows = (db, table, columns, data) => {
     const values = data[0].map(() => '?').join(', ')
     const insert = db.prepare(`INSERT INTO ${table} ${columns} VALUES (${values})`)
 
@@ -24,7 +24,7 @@ const _insertAllRows = (db, table, columns, data) => {
     })
 }
 
-const _insertData = (db) => {
+const insertData = (db) => {
     SQL_DATA.forEach(({ table, data }) => {
         console.log(`Inserting data into ${table}...`)
         let columns
@@ -38,7 +38,7 @@ const _insertData = (db) => {
             return
         }
 
-        _insertAllRows(db, table, columns, data)
+        insertAllRows(db, table, columns, data)
     })
     console.log('Data insertion complete.')
 }
@@ -54,10 +54,10 @@ const _setupDatabase = (db) => {
         console.log('Database already contains data. Skipping insertion.')
         return
     }
-    _insertData(db)
+    insertData(db)
 }
 
-const _saveTfIdfModel = (model) => {
+const saveTfIdfModel = (model) => {
     const modelJson = JSON.stringify(model, null, 2)
     fs.writeFileSync(TFIDF_MODEL_PATH, modelJson, 'utf-8')
     console.log('TF-IDF model generated and saved successfully.')
@@ -75,8 +75,9 @@ const setupStructuredData = () => {
 
 const setupUnstructuredData = () => {
     console.log(`Generating and saving TF-IDF Model...`)
-    const model = generateTfIdfModel(CORPUS)
-    _saveTfIdfModel(model)
+    const modelGenerator = new ModelGenerator()
+    const model = modelGenerator.generate(CORPUS)
+    saveTfIdfModel(model)
     console.log(`TF-IDF Model saved successfully. Model file: ${TFIDF_MODEL_PATH}\n`)
 }
 

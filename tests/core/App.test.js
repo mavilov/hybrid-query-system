@@ -6,7 +6,7 @@
 
 import test from 'node:test'
 import assert from 'node:assert'
-import { App } from '../src/App.js'
+import { App } from '../../src/App.js'
 
 // Mock database factory
 const createMockDb = () => {

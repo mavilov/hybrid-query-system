@@ -7,7 +7,7 @@
 import { SQLITE_DB_PATH } from './config.js'
 import { App } from './App.js'
 
-async function main() {
+const main = async () => {
     const app = new App({ dbPath: SQLITE_DB_PATH })
     try {
         app.init()

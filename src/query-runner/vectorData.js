@@ -4,7 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { vectorSearch } from '../tf-idf/tfidf_model.js'
+import { vectorSearch } from '../tf-idf/vectorSearch.js'
 
 /**
  * Performs vector search and formats the results.
