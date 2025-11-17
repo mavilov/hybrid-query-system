@@ -28,7 +28,6 @@ export class App {
     async runSingleQuery(query) {
         if (!this.db) throw new Error('Database not initialized')
         await runHybridQuery(this.db, query)
-        return 0
     }
 
     async runInteractive(io = { input: process.stdin, output: process.stdout, question: null }) {

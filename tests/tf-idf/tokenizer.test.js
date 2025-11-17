@@ -152,6 +152,27 @@ suite('tokenizer Tests', () => {
         assert.deepStrictEqual(result, ['café', 'naïve'])
     })
 
+    test('throws TypeError for non-string input', () => {
+        assert.throws(() => {
+            tokenize(123)
+        }, TypeError)
+
+        assert.throws(() => {
+            tokenize(null)
+        }, TypeError)
+
+        assert.throws(() => {
+            tokenize(undefined)
+        }, TypeError)
+
+        assert.throws(() => {
+            tokenize({})
+        }, TypeError)
+
+        assert.throws(() => {
+            tokenize([])
+        }, TypeError)
+    })
     test('handles Cyrillic (preserves them)', () => {
         const result = tokenize('Добрый день, как дела?')
         assert.deepStrictEqual(result, ['добрый', 'день', 'как', 'дела'])
