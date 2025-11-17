@@ -123,8 +123,7 @@ suite('vectorMath.dotProduct() tests', () => {
         assert.strictEqual(result, 0.5 * 2.0 + 1.5 * 1.0) // 2.5
     })
 
-    // TODO: test that it throws instead of warns?
-    test('warns and returns 0 for mismatched lengths', () => {
+    test('warns and throws an exception for mismatched lengths', () => {
         let warnCalled = false
         let warnMsg = ''
         const originalWarn = console.warn
@@ -136,11 +135,10 @@ suite('vectorMath.dotProduct() tests', () => {
         try {
             const vecA = [1, 2, 3]
             const vecB = [1, 2]
-            const result = vectorMath.dotProduct(vecA, vecB)
+            assert.throws(() => vectorMath.dotProduct(vecA, vecB), /Vector length mismatch/)
 
             assert.strictEqual(warnCalled, true)
             assert.match(warnMsg, /Vector length mismatch/)
-            assert.strictEqual(result, 0)
         } finally {
             console.warn = originalWarn
         }

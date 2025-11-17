@@ -25,8 +25,7 @@ export const vectorMath = {
     dotProduct: (vecA, vecB) => {
         if (vecA.length !== vecB.length) {
             console.warn('Vector length mismatch in dot product!', vecA.length, vecB.length)
-            // TODO: make this throw instead?
-            return 0
+            throw new Error('Vector length mismatch in dot product')
         }
         return vecA.reduce((sum, val, i) => sum + val * vecB[i], 0)
     },
