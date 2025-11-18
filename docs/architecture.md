@@ -68,20 +68,22 @@ My thinking regarding what to present, considering that I have only 4 calendar d
 - Using SQLite + a small TF‑IDF index is lightweight and reproducible for the assignment scope.
 - The _App_ class and DI-friendly modules support unit tests and make the CLI ergonomics straightforward.
 - `package.json` - yes, but no module/cli generation as npm does its job
-- Linting from day 1 with _ESLint_
-- pretty formatting from day 1 with _Prettier_
 - No frameworks for the core task, but look - I can use libraries! Besides `better-sqlite3`, `https-status-code` is used just because of one particular code! Not too much waste, rather a demonstration.
 - Markdown documents to state assumptions, as well as to document my reasoning and avoid stress/rush during the presentation.
+- Linting from day 1 with _ESLint_
+- Pretty formatting from day 1 with _Prettier_
+- Devcontainer to allow editing and limited execution in GitHub environment. Unit tests can pass. I add this line via the web based editor in my Devcontainer.
 
-Not specific to any components I mention below, following improvements could be potentially made if I'd have a few more days.
+Not specific to any components I will mention below, following improvements could be potentially made if I'd have a few more days.
 
-- add more unit tests
+- add more unit tests, mock Ollama responses
 - add e2e test involving Ollama
-- Docker to fix the environment, especially for e2e testing in GitHub
-- Maybe use TypeScript, but I question its value for the particular use case.
-- Go full-blown with no LLM for query decomposition and answer synthesis tasks, but as I mentioned, no time to do it with reasonably good quality.
+- Go full-blown with no LLM for query decomposition and answer synthesis tasks, but as I mentioned, no time to do this with sufficient quality.
+- Provide alternative embeddings generator, by using Ollama and its `POST /api/embed` endpoint.
+- Maybe containerize the app to fix the environment, especially for e2e testing in GitHub
 - make an http endpoint
 - write a simple UI, maybe use [Lovable](https://lovable.dev/) to generate it and connect to my endpoint
+- Maybe use TypeScript, but I question its value for this particular use case.
 - test everything in isolation as well as the whole flow e2e
 - [ADK architecture](https://cloud.google.com/blog/topics/developers-practitioners/where-to-use-sub-agents-versus-agents-as-tools) with sub-agent (implemented as a tool and deterministic) running SQL query.
 
@@ -102,13 +104,13 @@ No compromise here, I need to demonstrate that:
 - I am capable of writing code that can execute `SELECT` statements against SQLite.
 - I understand how [TF-IDF](https://en.wikipedia.org/wiki/Tf–idf) works and I can calculate embeddings and perform vector searches.
 
-I am new to implementing vector search myself. I can spend the majority of the time with this and will play in a less familiar field. However, that needs to be implemented, no matter what, and it has to work well.
+I can spend the majority of the time with this, trying different similarity functions, and will play in a less familiar field. However, that needs to be implemented, no matter what, and it has to work well.
 
 #### Improvement ideas
 
 - ~~just use MongoDB Atlas~~
 - read about and apply more advanced algorithm. SQL does the exact search, and there might be issues with package name variations.
-- Maybe ORM could be of some tiny help for relational data generation and extraction (bells and whistles for this task).
+- Maybe an ORM library could be of some tiny help for relational data generation and extraction (bells and whistles for this task).
 
 ### Answer generation
 
@@ -128,6 +130,6 @@ npm run resetData
 
 #### Improvement ideas
 
-- CSV file for loading into SQL database. Handy to update.
-- read files with unstructured data from local fs
-- crawl [Snyk](https://security.snyk.io/vuln/) or similar sites
+- Two CSV files for loading into SQL database. Handy to update, but maybe an overkill for this little task.
+- Read files with unstructured data from local files. This is a trivial task, but if I'd have some 20 files as a document corpus, it will be harder to follow during the demo flow.
+- crawl [Snyk](https://security.snyk.io/vuln/) or similar sites for real vulnerabilities. Maybe I can even gen an API key for this to avoid HTML scrapping. That would be really cool.
