@@ -43,7 +43,7 @@ const insertData = (db) => {
     console.log('Data insertion complete.')
 }
 
-const _setupDatabase = (db) => {
+const setupDatabase = (db) => {
     db.exec(SQL_SCHEMA)
     console.log('Schema created/verified.')
 
@@ -68,7 +68,7 @@ const saveTfIdfModel = (model) => {
 const setupStructuredData = () => {
     console.log('Setting up SQLite Database...')
     const db = new Database(SQLITE_DB_PATH)
-    _setupDatabase(db)
+    setupDatabase(db)
     db.close()
     console.log(`SQLite Database setup complete. Database file: ${SQLITE_DB_PATH}\n`)
 }
