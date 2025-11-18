@@ -83,6 +83,7 @@ Not specific to any components I mention below, following improvements could be 
 - make an http endpoint
 - write a simple UI, maybe use [Lovable](https://lovable.dev/) to generate it and connect to my endpoint
 - test everything in isolation as well as the whole flow e2e
+- [ADK architecture](https://cloud.google.com/blog/topics/developers-practitioners/where-to-use-sub-agents-versus-agents-as-tools) with sub-agent (implemented as a tool and deterministic) running SQL query.
 
 ### Query decomposition
 

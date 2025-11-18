@@ -19,7 +19,7 @@ Analyze the user's question and determine the single best plan in the required J
 Required JSON Schema:
 {
     "type": "SQL" | "VECTOR" | "HYBRID",
-    "sqlQuery": "STRING (required and not empty if type is SQL or HYBRID. Use JOINs and WHERE clauses to retrieve all related vulnerability data for a package name.)",
+    "sqlQuery": "STRING (required and not empty if type is SQL or HYBRID. Use JOINs and WHERE clauses to retrieve all related vulnerability data for a package name. Do not use package version conditions in the SQL query unless asked explicitly.)",
     "vectorSearchTerm": "STRING (required if type is VECTOR or HYBRID. The optimized search query.)",
     "finalAnswerPrompt": "STRING (The synthesis instruction for the final answer.)"
 }
