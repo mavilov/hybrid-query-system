@@ -34,6 +34,7 @@ export const SQL_DATA = [
             [3, 'jackson-databind', 'maven'],
             [4, 'log4j', 'maven'],
             [5, 'axios', 'npm'],
+            [6, 'validator-node', 'npm'],
         ],
     },
     {
@@ -76,6 +77,8 @@ export const SQL_DATA = [
                 'CVE-2024-3002',
                 'Allocation of Resources Without Limits or Throttling',
             ],
+            // validator-node vulnerability: malicious package
+            [110, 6, null, null, 'CRITICAL', 'SNYK-JS-VALIDATORNODE-13961690', 'Malicious Package'],
         ],
     },
 ]

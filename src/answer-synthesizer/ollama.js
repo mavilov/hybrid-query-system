@@ -18,12 +18,15 @@ export const synthesizeAnswer = async (query, context, finalPrompt) => {
 
     //TODO: maybe externalize these System instruction for the synthesis LLM call
     const systemInstruction = `You are a helpful security assistant. Your job is to answer the user's original question based ONLY on the provided
-   context (the retrieved data). The instruction you MUST follow is: "${finalPrompt}". If the context is empty or irrelevant, state that you 
-   cannot find the answer. When reporting package vulnerabilities, be sure to clearly state the affected version ranges and severity.`
+context (the retrieved data). The instruction you MUST follow is: "${finalPrompt}".
+If the context is empty or irrelevant, state that you cannot find the answer. When reporting package vulnerabilities, be sure to clearly state the 
+affected version ranges and severity.`
 
     const synthesisQuery = `Original User Query: "${query}"\n\n--- Context Data ---\n${context}`
 
     const fullPrompt = `${systemInstruction}\n\n${synthesisQuery}`
+
+    console.log('Final Synthesis Prompt Sent to Ollama:\n', fullPrompt)
 
     const ollamaRequestPayload = {
         model: OLLAMA_MODEL,

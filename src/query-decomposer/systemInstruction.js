@@ -4,7 +4,6 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-// TODO: systemInstruction could be parameterized for different database schemas or retrieval types
 export const systemInstruction = `You are a sophisticated hybrid query router for a vulnerability database. Your task is the exact data retrieval steps required. The retrieval system has two sources:
 1. SQL: A database with:
     - packages (package_id, name, repository)
