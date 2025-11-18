@@ -4,7 +4,7 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import test, { suite } from 'node:test'
+import test, { beforeEach, suite } from 'node:test'
 import assert from 'node:assert'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -33,10 +33,12 @@ const removeModel = () => {
     }
 }
 
+beforeEach(() => {
+    removeModel()
+})
+
 suite('vectorSearch', () => {
     test('returns [] and logs error when model file missing', async () => {
-        removeModel()
-
         let errMsg = ''
         const origErr = console.error
         console.error = (msg) => {
@@ -54,8 +56,6 @@ suite('vectorSearch', () => {
     })
 
     test('returns topK ordered results for a simple model', async () => {
-        removeModel()
-
         // Build a tiny model:
         // vocab: apple -> 0, banana -> 1
         // idfScores: both 1
@@ -89,8 +89,6 @@ suite('vectorSearch', () => {
     })
 
     test('returns [] when query tokens not in vocabulary', async () => {
-        removeModel()
-
         const model = {
             corpus: ['doc1'],
             vocabulary: { apple: 0 },
