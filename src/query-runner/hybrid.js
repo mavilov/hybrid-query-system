@@ -8,6 +8,7 @@ import { decomposeQuery } from '../query-decomposer/ollama.js'
 import { retrieveSqlData } from './sqlData.js'
 import { retrieveVectorData } from './vectorData.js'
 import { synthesizeAnswer } from '../answer-synthesizer/ollama.js'
+import chalk from 'chalk'
 
 /**
  * Executes the full hybrid retrieval and synthesis flow.
@@ -61,13 +62,16 @@ const getContext = (type, db, sqlQuery, vectorSearchTerm) => {
 
 const printFinalAnswer = (answer, query, type, sqlQuery, vectorSearchTerm, context) => {
     console.log('\n=================================================')
-    console.log(`USER QUESTION: ${query}`)
+    console.log(chalk.bold('USER QUESTION:\n'))
+    console.log(`${query}`)
+    console.log(chalk.bold('\nSYSTEM PLAN:\n'))
     console.log(
-        `\nSYSTEM PLAN:\nType: ${type}\nSQL: ${sqlQuery}\nVector Search: ${vectorSearchTerm}`
+        `Type         : ${type}\nSQL          : ${sqlQuery}\nVector Search: ${vectorSearchTerm}`
     )
-    console.log('\nRAW CONTEXT RETRIEVED:')
+    console.log(chalk.bold('\nRAW CONTEXT RETRIEVED:'))
     console.log(context)
     console.log('\n-------------------------------------------------')
-    console.log(`FINAL ANSWER:\n${answer}`)
+    console.log(chalk.bold('FINAL ANSWER:\n'))
+    console.log(`${answer}`)
     console.log('=================================================')
 }
