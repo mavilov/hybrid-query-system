@@ -5,7 +5,7 @@
  */
 
 import { tokenize } from './tokenizer.js'
-import { vectorMath } from './vectorMath.js'
+import { cosineSimilarity } from './vectorMath.js'
 import * as fs from 'node:fs'
 
 /**
@@ -63,7 +63,7 @@ export const vectorSearch = (queryText, modelPath, topK = 3) => {
 
     // Calculate similarity with all document vectors
     const results = model.documentVectors.map((docVec, index) => {
-        const score = vectorMath.cosineSimilarity(queryVec, docVec)
+        const score = cosineSimilarity(queryVec, docVec)
         return {
             text: model.corpus[index],
             score: score,
