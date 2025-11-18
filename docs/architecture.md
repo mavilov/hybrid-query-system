@@ -56,63 +56,64 @@ The SQL schema and initial seed rows for testing live in [`src/initial-data-setu
 
 ## Operational considerations and security
 
-- Seed and model generation are explicit: run `npm run setup` to create/update data files.
+- Seed and model generation are explicit: run `npm run setup` to create/update data files from the predefined corpus.
 - Snyk code scan flags one place as problematic that I chose to ignore so I can mention it
+- [`package.json`](../package.json) has one dev dependency that is risky - not addressing yet to demonstrate that I spotted it. For my purposes the risk of exploiting is low.
 
 ## Why this structure?
 
-My thinking regarding what to present, considering that I have only 4 calendar days with very limited availability. What is important and what are tradeoffs.
+My thinking regarding what to present, considering that I have only 4 calendar days with very limited availability. What is important and what are tradeoffs? Let me elaborate.
 
 - Clear separation between decomposition/planning (LLM), execution (SQL/vector), answer generation, and orchestration (App) keeps responsibilities small and testable.
 - Using SQLite + a small TF‑IDF index is lightweight and reproducible for the assignment scope.
-- The App class and DI-friendly modules support unit tests and make the CLI ergonomics straightforward.
+- The _App_ class and DI-friendly modules support unit tests and make the CLI ergonomics straightforward.
 - `package.json` - yes, but no module/cli generation as npm does its job
 - Linting from day 1 with _ESLint_
 - pretty formatting from day 1 with _Prettier_
-- No frameworks for the core task, but look - I can use libraries! `better-sqlite3`, `https-status-code` imported just because of one code! Not too much waste, but a demonstration
-- Markdown documents to state assumptions, as well as to document my reasoning and avoid stress/rush.
+- No frameworks for the core task, but look - I can use libraries! Besides `better-sqlite3`, `https-status-code` is used just because of one particular code! Not too much waste, rather a demonstration.
+- Markdown documents to state assumptions, as well as to document my reasoning and avoid stress/rush during the presentation.
 
-Not specific to any components I mention below, following improvements could be potentially made if I'd have a few more full days.
+Not specific to any components I mention below, following improvements could be potentially made if I'd have a few more days.
 
 - add more unit tests
 - add e2e test involving Ollama
 - Docker to fix the enviromnent, especially for e2e testing in GitHub
-- Maybe use TypeScript, but what's the value here
-- Go full-blown with no LLM for misc tasks, but as I mentioned, no time to do it any good
-- make an endpoint
-- write simple UI
-- test everything in isolation as well as e2e
+- Maybe use TypeScript, but I question its value for the particular use case.
+- Go full-blown with no LLM for query decomposition and answer synthesis tasks, but as I mentioned, no time to do it with reasonably good quality.
+- make an http endpoint
+- write a simple UI, maybe use [Lovable](https://lovable.dev/) to generate it and connect to my endpoint
+- test everything in isolation as well as the whole flow e2e
 
 ### Query decomposition
 
-Calling LLM for query decomposition is fine, so I went this way. At first, I used Gemini and faced its rate limiting pretty soon. This is a risk for my interview, I really need something that I can control better. Next try was Ollama and it worked well so far. I decided not to use any proxy libraries like LangChain and make decomposition just work.
+Calling LLM for query decomposition is fine, so I went this way. At first, I used Gemini and faced its rate limiting pretty soon. This is a risk for my interview, I really need something that I can control better. Next try was Ollama and it worked well so far. I decided not to use any proxy libraries like LangChain and made the decomposition just work.
 
 #### Improvement ideas
 
-- LangChain could be of a help to transition to something better. One could write tools to do custom query parsing, but that is not a trivial task.
-- Doing multiple pattern searches could lead to unmanageable mess pretty fast for this test assignment.
-- account for misspelling (word distance calculations allowing for a single typo or N typos)
+- LangChain could be of a help to transition to something better. One could write _tools_ for LangChain to do custom query parsing, but **good** query parsing is not a trivial task.
+- Doing multiple pattern searches could lead to unmanageable mess pretty fast for this test assignment. Unless we fix a few sentence structures.
+- Account for misspelling (word distance calculations allowing for a single typo or N typos)
 
 ### Query runner
 
 No compromise here, I need to demonstrate that:
 
-- I am capable of writing a code that can execute SELECT statements against SQLite.
+- I am capable of writing code that can execute `SELECT` statements against SQLite.
 - I understand how [TF-IDF](https://en.wikipedia.org/wiki/Tf–idf) works and I can calculate embeddings and perform vector searches.
 
-I am new to implementing vector search myself. I can spend the majority of the time with this and will play in a less familiar field. However, that needs to be implemented, no matter what, and it has to work.
+I am new to implementing vector search myself. I can spend the majority of the time with this and will play in a less familiar field. However, that needs to be implemented, no matter what, and it has to work well.
 
 #### Improvement ideas
 
 - ~~just use MongoDB Atlas~~
-- read about and apply more advanced algorythm. I observed that for Hybrid searches somehow _express_ is different from _Express.js_ and _expressjs_.
-- Maybe ORM could be of some help (bells and whistles for this task)
+- read about and apply more advanced algorythm. SQL does the exact search, and there might be issues with package name variations.
+- Maybe ORM could be of some tiny help for relational data generation and extraction (bells and whistles for this task).
 
 ### Answer generation
 
 ### Data loading
 
-Data can be loaded from static, hardcoded sources into a database (.db file) and embeddings file (.json file) with this command
+Data can be loaded from static, hardcoded sources into a database (`vulnerability_db.db` file) and embeddings file (`tfidf_model.json` file) with this command
 
 ```bash
 npm run setup
@@ -128,4 +129,4 @@ npm run resetData
 
 - CSV file for loading into SQL database. Handy to update.
 - read files with unstructured data from local fs
-- crawl [Snyk](https://security.snyk.io/vuln/) and / or similar sites
+- crawl [Snyk](https://security.snyk.io/vuln/) or similar sites

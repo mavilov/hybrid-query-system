@@ -11,6 +11,7 @@ import { synthesizeAnswer } from '../answer-synthesizer/ollama.js'
 
 /**
  * Executes the full hybrid retrieval and synthesis flow.
+ *
  * @param {string} query - The user's input question.
  */
 export const runHybridQuery = async (db, query) => {
