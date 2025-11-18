@@ -8,7 +8,7 @@ import test, { suite } from 'node:test'
 import assert from 'node:assert'
 import { tokenize } from '../../src/tf-idf/tokenizer.js'
 
-suite('tokenizer Tests', () => {
+suite('tokenizer', () => {
     test('converts text to lowercase', () => {
         const result = tokenize('HELLO WORLD')
         assert.deepStrictEqual(result, ['hello', 'world'])

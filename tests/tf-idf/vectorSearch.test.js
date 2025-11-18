@@ -29,7 +29,7 @@ const removeModel = () => {
     }
 }
 
-suite('vectorSearch Tests', () => {
+suite('vectorSearch', () => {
     test('returns [] and logs error when model file missing', async () => {
         removeModel()
 

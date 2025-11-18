@@ -8,7 +8,7 @@ import test, { suite } from 'node:test'
 import assert from 'node:assert'
 import { vectorMath } from '../../src/tf-idf/vectorMath.js'
 
-suite('vectorMath.magnitude() tests', () => {
+suite('vectorMath.magnitude()', () => {
     test('calculates magnitude of simple vector', () => {
         const vector = [3, 4]
         const result = vectorMath.magnitude(vector)
@@ -71,9 +71,8 @@ suite('vectorMath.magnitude() tests', () => {
         assert.strictEqual(result, expected)
     })
 })
-// --- dotProduct() tests ---
 
-suite('vectorMath.dotProduct() tests', () => {
+suite('vectorMath.dotProduct()', () => {
     test('calculates dot product of simple vectors', () => {
         const vecA = [1, 2, 3]
         const vecB = [4, 5, 6]
@@ -152,7 +151,7 @@ suite('vectorMath.dotProduct() tests', () => {
     })
 })
 
-suite('vectorMath.cosineSimilarity() tests', () => {
+suite('vectorMath.cosineSimilarity()', () => {
     test('calculates similarity of identical vectors', () => {
         const vecA = [1, 2, 3]
         const vecB = [1, 2, 3]
