@@ -250,27 +250,29 @@ test('App.printInstructions() outputs welcome message', () => {
     }
 })
 
-test('App uses default fs module when not provided', () => {
-    const dbFactory = () => createMockDb()
-    const app = new App({
-        dbPath: '/test/db.db',
-        dbFactory,
+suite('App uses defaults', () => {
+    test('fs module when not provided', () => {
+        const dbFactory = () => createMockDb()
+        const app = new App({
+            dbPath: '/test/db.db',
+            dbFactory,
+        })
+
+        // Should use fs by default, so fs.existsSync should be callable
+        assert.strictEqual(typeof app.fs.existsSync, 'function')
     })
 
-    // Should use fs by default, so fs.existsSync should be callable
-    assert.strictEqual(typeof app.fs.existsSync, 'function')
-})
+    test('dbFactory when not provided', async () => {
+        const mockFs = {
+            existsSync: () => true,
+        }
 
-test('App uses default dbFactory when not provided', async () => {
-    const mockFs = {
-        existsSync: () => true,
-    }
+        // This test verifies the default dbFactory is set, even if we can't test Database directly
+        const app = new App({
+            dbPath: '/test/db.db',
+            fsModule: mockFs,
+        })
 
-    // This test verifies the default dbFactory is set, even if we can't test Database directly
-    const app = new App({
-        dbPath: '/test/db.db',
-        fsModule: mockFs,
+        assert.strictEqual(typeof app.dbFactory, 'function')
     })
-
-    assert.strictEqual(typeof app.dbFactory, 'function')
 })
