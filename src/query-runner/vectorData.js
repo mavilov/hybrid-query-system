@@ -5,6 +5,7 @@
  */
 
 import { vectorSearch } from '../tf-idf/vectorSearch.js'
+import { TFIDF_MODEL_PATH } from '../config.js'
 
 /**
  * Performs vector search and formats the results.
@@ -13,7 +14,7 @@ import { vectorSearch } from '../tf-idf/vectorSearch.js'
  */
 export const retrieveVectorData = (searchTerm) => {
     console.log(`Executing Vector Search for: "${searchTerm}"`)
-    const results = vectorSearch(searchTerm, 3)
+    const results = vectorSearch(searchTerm, TFIDF_MODEL_PATH, 3)
 
     if (results.length === 0) {
         return 'No relevant documents found in the vector store.'

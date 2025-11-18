@@ -8,6 +8,7 @@ import test, { suite } from 'node:test'
 import assert from 'node:assert'
 import fs from 'node:fs'
 import path from 'node:path'
+import { vectorSearch } from '../../src/tf-idf/vectorSearch.js'
 
 const TFIDF_MODEL_PATH = path.join('data.test', 'tfidf_model.json')
 
@@ -25,7 +26,7 @@ const removeModel = () => {
     try {
         const dir = path.dirname(TFIDF_MODEL_PATH)
         fs.unlinkSync(TFIDF_MODEL_PATH)
-        fs.rmdirSync(dir, { recursive: true })
+        fs.rmSync(dir, { recursive: true })
         // eslint-disable-next-line no-unused-vars
     } catch (e) {
         // Ignore errors if file does not exist
@@ -43,8 +44,7 @@ suite('vectorSearch', () => {
         }
 
         try {
-            const { vectorSearch } = await import('../../src/tf-idf/vectorSearch.js')
-            const res = vectorSearch('apple')
+            const res = vectorSearch('apple', TFIDF_MODEL_PATH)
             assert.deepStrictEqual(res, [])
             assert.match(errMsg, /TF-IDF model file not found/)
             assert.match(errMsg, new RegExp(path.basename(TFIDF_MODEL_PATH)))
@@ -73,15 +73,14 @@ suite('vectorSearch', () => {
         writeModel(model)
 
         try {
-            const { vectorSearch } = await import('../../src/tf-idf/vectorSearch.js')
-            const res = vectorSearch('apple', 3)
+            const res = vectorSearch('apple', TFIDF_MODEL_PATH, 3)
             // Expect doc-apple (score 1) first, doc-both (score ~0.707) second
             assert.strictEqual(res.length, 2)
             assert.strictEqual(res[0].text, 'doc-apple')
             assert.strictEqual(res[1].text, 'doc-both')
             assert.ok(res[0].score > res[1].score)
             // topK trimming
-            const res1 = vectorSearch('apple', 1)
+            const res1 = vectorSearch('apple', TFIDF_MODEL_PATH, 1)
             assert.strictEqual(res1.length, 1)
             assert.strictEqual(res1[0].text, 'doc-apple')
         } finally {
@@ -101,8 +100,7 @@ suite('vectorSearch', () => {
         writeModel(model)
 
         try {
-            const { vectorSearch } = await import('../../src/tf-idf/vectorSearch.js')
-            const res = vectorSearch('orange', 3)
+            const res = vectorSearch('orange', TFIDF_MODEL_PATH, 3)
             assert.deepStrictEqual(res, [])
         } finally {
             removeModel()

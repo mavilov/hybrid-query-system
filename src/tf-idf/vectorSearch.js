@@ -4,7 +4,6 @@
  * (c) 2025 Maksim Avilov, mavilov@hotmail.com
  */
 
-import { TFIDF_MODEL_PATH } from '../config.js'
 import { tokenize } from './tokenizer.js'
 import { vectorMath } from './vectorMath.js'
 import * as fs from 'node:fs'
@@ -48,15 +47,15 @@ const queryToVector = (queryText, model) => {
  * @param {number} topK - Number of top results to return, three by default.
  * @returns {{text: string, score: number}[]} Array of ranked results.
  */
-export const vectorSearch = (queryText, topK = 3) => {
-    if (!fs.existsSync(TFIDF_MODEL_PATH)) {
+export const vectorSearch = (queryText, modelPath, topK = 3) => {
+    if (!fs.existsSync(modelPath)) {
         console.error(
-            `Error: TF-IDF model file not found at ${TFIDF_MODEL_PATH}. Did you run 'npm run setup'?`
+            `Error: TF-IDF model file not found at ${modelPath}. Did you run 'npm run setup'?`
         )
         return []
     }
 
-    const modelJson = fs.readFileSync(TFIDF_MODEL_PATH, 'utf-8')
+    const modelJson = fs.readFileSync(modelPath, 'utf-8')
     const model = JSON.parse(modelJson)
 
     // Vectorize the query
