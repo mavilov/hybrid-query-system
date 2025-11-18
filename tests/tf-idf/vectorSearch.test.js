@@ -8,7 +8,8 @@ import test, { suite } from 'node:test'
 import assert from 'node:assert'
 import fs from 'node:fs'
 import path from 'node:path'
-import { TFIDF_MODEL_PATH } from '../../src/config.js'
+
+const TFIDF_MODEL_PATH = path.join('data.test', 'tfidf_model.json')
 
 const ensureDataDir = () => {
     const dir = path.dirname(TFIDF_MODEL_PATH)
@@ -22,7 +23,9 @@ const writeModel = (model) => {
 
 const removeModel = () => {
     try {
+        const dir = path.dirname(TFIDF_MODEL_PATH)
         fs.unlinkSync(TFIDF_MODEL_PATH)
+        fs.rmdirSync(dir, { recursive: true })
         // eslint-disable-next-line no-unused-vars
     } catch (e) {
         // Ignore errors if file does not exist
