@@ -1,6 +1,6 @@
 # Solution Description
 
-This document describes the actual architecture implemented in the repository as of 15 Nov 2025.
+This document describes the actual architecture implemented in the repository as of 19 November 2025.
 
 ## High-level overview
 
@@ -77,7 +77,7 @@ Not specific to any components I mention below, following improvements could be 
 
 - add more unit tests
 - add e2e test involving Ollama
-- Docker to fix the enviromnent, especially for e2e testing in GitHub
+- Docker to fix the environment, especially for e2e testing in GitHub
 - Maybe use TypeScript, but I question its value for the particular use case.
 - Go full-blown with no LLM for query decomposition and answer synthesis tasks, but as I mentioned, no time to do it with reasonably good quality.
 - make an http endpoint
@@ -107,7 +107,7 @@ I am new to implementing vector search myself. I can spend the majority of the t
 #### Improvement ideas
 
 - ~~just use MongoDB Atlas~~
-- read about and apply more advanced algorythm. SQL does the exact search, and there might be issues with package name variations.
+- read about and apply more advanced algorithm. SQL does the exact search, and there might be issues with package name variations.
 - Maybe ORM could be of some tiny help for relational data generation and extraction (bells and whistles for this task).
 
 ### Answer generation
