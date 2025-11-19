@@ -90,7 +90,16 @@ suite('tokenizer', () => {
     test('handles real-world example: package name query', () => {
         const result = tokenize('What vulnerabilities does express@5.0.0 have?')
         // 'what', 'vulnerabilities'->'vulnerability', 'does'->'doe', 'express', '5', '0', '0', 'have'
-        assert.deepStrictEqual(result, ['what', 'vulnerability', 'doe', 'express', '5', '0', '0', 'have'])
+        assert.deepStrictEqual(result, [
+            'what',
+            'vulnerability',
+            'doe',
+            'express',
+            '5',
+            '0',
+            '0',
+            'have',
+        ])
     })
 
     test('handles real-world example: less and more chars', () => {
