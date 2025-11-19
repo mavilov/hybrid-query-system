@@ -151,13 +151,13 @@ suite('ModelGenerator.generate()', () => {
 
     test('common terms have lower IDF', () => {
         const generator = new ModelGenerator()
-        const corpus = ['the the the', 'the and', 'and or']
+        const corpus = ['bread bread bread', 'bread butter', 'and milk']
         const model = generator.generate(corpus)
 
-        const theIdf = model.idfScores.the // Appears in 2/3 documents
-        const orIdf = model.idfScores.or // Appears in 1/3 documents
+        const breadIdf = model.idfScores.bread // Appears in 2/3 documents
+        const milkIdf = model.idfScores.milk // Appears in 1/3 documents
 
-        assert.strictEqual(theIdf < orIdf, true)
+        assert.strictEqual(breadIdf < milkIdf, true)
     })
 
     test('vocabulary is case-insensitive', () => {

@@ -29,34 +29,37 @@ suite('tokenizer', () => {
         assert.deepStrictEqual(result, ['hello', 'world'])
     })
 
-    test('removes common punctuation marks', () => {
+    test('removes common punctuation marks and stop words', () => {
         const result = tokenize("What is this? It's great!")
-        assert.deepStrictEqual(result, ['what', 'is', 'this', 'its', 'great'])
+        // 'what' (kept), 'is' (stop), 'this' -> 'thi' (stem), 'it's' -> 'it' (stem), 'great' (kept)
+        assert.deepStrictEqual(result, ['what', 'thi', 'it', 'great'])
     })
 
-    test('removes special characters', () => {
+    test('replaces special characters with space', () => {
         const result = tokenize('hello@world test$value')
-        assert.deepStrictEqual(result, ['helloworld', 'testvalue'])
+        assert.deepStrictEqual(result, ['hello', 'world', 'test', 'value'])
     })
 
     test('handles dots and slashes', () => {
         const result = tokenize('path/to/file.txt')
-        assert.deepStrictEqual(result, ['pathtofiletxt'])
+        // 'path', 'to' (stop), 'file', 'txt'
+        assert.deepStrictEqual(result, ['path', 'file', 'txt'])
     })
 
     test('handles dashes and underscores', () => {
         const result = tokenize('my-package_name')
-        assert.deepStrictEqual(result, ['mypackagename'])
+        assert.deepStrictEqual(result, ['my', 'package', 'name'])
     })
 
     test('handles parentheses and brackets', () => {
         const result = tokenize('example (with) [brackets]')
-        assert.deepStrictEqual(result, ['example', 'with', 'brackets'])
+        // 'example', 'with' (stop), 'brackets' -> 'bracket' (stem)
+        assert.deepStrictEqual(result, ['example', 'bracket'])
     })
 
     test('handles curly braces', () => {
         const result = tokenize('data{value}here')
-        assert.deepStrictEqual(result, ['datavaluehere'])
+        assert.deepStrictEqual(result, ['data', 'value', 'here'])
     })
 
     test('filters out empty strings', () => {
@@ -86,12 +89,14 @@ suite('tokenizer', () => {
 
     test('handles real-world example: package name query', () => {
         const result = tokenize('What vulnerabilities does express@5.0.0 have?')
-        assert.deepStrictEqual(result, ['what', 'vulnerabilities', 'does', 'express500', 'have'])
+        // 'what', 'vulnerabilities'->'vulnerability', 'does'->'doe', 'express', '5', '0', '0', 'have'
+        assert.deepStrictEqual(result, ['what', 'vulnerability', 'doe', 'express', '5', '0', '0', 'have'])
     })
 
     test('handles real-world example: less and more chars', () => {
         const result = tokenize('Version > 1.2.3 and < 2.0.0')
-        assert.deepStrictEqual(result, ['version', '123', 'and', '200'])
+        // 'version', '1', '2', '3', 'and'(stop), '2', '0', '0'
+        assert.deepStrictEqual(result, ['version', '1', '2', '3', '2', '0', '0'])
     })
 
     test('handles quotes', () => {
@@ -116,7 +121,7 @@ suite('tokenizer', () => {
 
     test('handles ampersand', () => {
         const result = tokenize('this & that')
-        assert.deepStrictEqual(result, ['this', 'that'])
+        assert.deepStrictEqual(result, ['thi', 'that'])
     })
 
     test('handles semicolons', () => {
@@ -131,7 +136,7 @@ suite('tokenizer', () => {
 
     test('handles equals sign', () => {
         const result = tokenize('x=y')
-        assert.deepStrictEqual(result, ['xy'])
+        assert.deepStrictEqual(result, ['x', 'y'])
     })
 
     test('is case-insensitive', () => {
