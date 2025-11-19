@@ -34,9 +34,7 @@ export const retrieveSqlData = (db, sql) => {
     }
 }
 
-const isSelectQuery = (sql) => {
-    return sql.trim().toUpperCase().startsWith('SELECT')
-}
+const isSelectQuery = (sql) => sql.trim().toUpperCase().startsWith('SELECT')
 
 /**
  * Formats returned rows into a readable table.
