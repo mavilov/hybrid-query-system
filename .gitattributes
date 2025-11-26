@@ -1,0 +1,60 @@
+# -------------------------------
+# Global text normalization
+# -------------------------------
+*                  text=auto
+
+# -------------------------------
+# JavaScript source
+# -------------------------------
+*.js               text diff=javascript
+*.cjs              text diff=javascript
+*.mjs              text diff=javascript
+
+# -------------------------------
+# Node & project metadata
+# -------------------------------
+package.json       text
+package-lock.json  text
+
+# -------------------------------
+# Config & data files
+# -------------------------------
+*.json             text
+*.yaml             text
+*.yml              text
+*.env              text
+*.env.*            text
+*.ini              text
+*.cfg              text
+*.conf             text
+*.sql              text
+*.txt              text
+*.md               text diff=markdown
+
+# -------------------------------
+# Shell & tooling scripts
+# -------------------------------
+*.sh               text
+*.bash             text
+*.zsh              text
+
+# -------------------------------
+# Make & container
+# -------------------------------
+Dockerfile         text
+*.dockerfile       text
+docker-compose.yml text
+
+# -------------------------------
+# Binary files (never normalize, never diff)
+# -------------------------------
+*.zip              binary
+*.tar              binary
+*.gz               binary
+*.7z               binary
+*.pdf              binary
+*.png              binary
+*.jpg              binary
+*.jpeg             binary
+*.gif              binary
+*.webp             binary
