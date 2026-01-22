@@ -45,12 +45,26 @@ export const decomposeQuery = async (query) => {
                 console.log('Retrying...')
             } else {
                 console.error(
-                    'Failed to decompose query after multiple retries. Check if Ollama is running and the model is downloaded.'
+                    `Failed to decompose query after ${maxRetries} retries. Check if Ollama is running and the model is downloaded.`
                 )
                 throw error
             }
         }
     }
+}
+
+const cleanJson = (text) => {
+    // The model is instructed to return *only* JSON, so we parse it directly.
+    // Note: Some models wrap the JSON in ```json...``` even when asked not to. We must be ready to clean this up.
+    let cleanedJsonText = text.trim()
+    if (cleanedJsonText.startsWith('```json')) {
+        // TODO: consider regex for more robust cleaning or maybe skipping outside of { and }
+        cleanedJsonText = cleanedJsonText.substring(7, cleanedJsonText.lastIndexOf('```'))
+    }
+    if (cleanedJsonText.startsWith('```')) {
+        cleanedJsonText = cleanedJsonText.substring(3, cleanedJsonText.lastIndexOf('```'))
+    }
+    return cleanedJsonText
 }
 
 const _queryOllama = async (reqPayload) => {
@@ -75,15 +89,7 @@ const _queryOllama = async (reqPayload) => {
         throw new Error('Ollama response was empty or malformed.')
     }
 
-    // The model is instructed to return *only* JSON, so we parse it directly.
-    // Note: Some models wrap the JSON in ```json...``` even when asked not to. We must be ready to clean this up.
-    let cleanedJsonText = jsonText.trim()
-    if (cleanedJsonText.startsWith('```json')) {
-        // TODO: consider regex for more robust cleaning or maybe skipping outside of { and }
-        cleanedJsonText = cleanedJsonText.substring(7, cleanedJsonText.lastIndexOf('```'))
-    }
-    if (cleanedJsonText.startsWith('```')) {
-        cleanedJsonText = cleanedJsonText.substring(3, cleanedJsonText.lastIndexOf('```'))
-    }
+    const cleanedJsonText = cleanJson(jsonText)
+
     return cleanedJsonText
 }
