@@ -197,4 +197,17 @@ suite('tokenizer', () => {
         const result = tokenize('Добрый день, как дела?')
         assert.deepStrictEqual(result, ['добрый', 'день', 'как', 'дела'])
     })
+
+    test('respects stemming=false option', () => {
+        const result = tokenize('running tests', { stemming: false })
+        assert.deepStrictEqual(result, ['running', 'tests'])
+    })
+
+    test('supports custom stop words (Russian)', () => {
+        const russianStopWords = new Set(['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со'])
+        const text = 'я и мой друг пошли в кино'
+        const result = tokenize(text, { stopWords: russianStopWords })
+        // 'я'(stop), 'и'(stop), 'мой', 'друг', 'пошли', 'в'(stop), 'кино'
+        assert.deepStrictEqual(result, ['мой', 'друг', 'пошли', 'кино'])
+    })
 })
