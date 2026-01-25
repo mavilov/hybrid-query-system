@@ -95,23 +95,23 @@ suite('tokenizer', () => {
         test('stems words ending in "ing"', () => {
             const result = tokenize('running jumping')
             assert.deepStrictEqual(result, ['run', 'jump'])
-        });
+        })
 
         test('stems words ending in "ies"', () => {
             const result = tokenize('studies bunnies')
             assert.deepStrictEqual(result, ['study', 'bunny'])
-        });
+        })
 
         test('stems words ending in "s" but not "ss"', () => {
             const result = tokenize('cats dogs process')
             assert.deepStrictEqual(result, ['cat', 'dog', 'process'])
-        });
+        })
 
         test('does not stem short words', () => {
             const result = tokenize('bus has gas')
             assert.deepStrictEqual(result, ['bus', 'gas'])
-        });
-    });
+        })
+    })
 
     suite('Options', () => {
         test('respects stemming=false option', () => {
@@ -120,7 +120,18 @@ suite('tokenizer', () => {
         })
 
         test('supports custom stop words (Russian)', () => {
-            const russianStopWords = new Set(['и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со'])
+            const russianStopWords = new Set([
+                'и',
+                'в',
+                'во',
+                'не',
+                'что',
+                'он',
+                'на',
+                'я',
+                'с',
+                'со',
+            ])
             const text = 'я и мой друг пошли в кино'
             const result = tokenize(text, { stopWords: russianStopWords, stemming: false })
             assert.deepStrictEqual(result, ['мой', 'друг', 'пошли', 'кино'])
