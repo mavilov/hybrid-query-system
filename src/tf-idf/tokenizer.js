@@ -5,16 +5,56 @@
  */
 
 /**
+ * @typedef {Object} TokenizerOptions
+ * @property {boolean} [stemming=true] - Enable/disable simple stemming
+ * @property {Set<string>} [stopWords] - Custom set of stop words
+ */
+
+/**
+ * Standard stop words (expanded set)
+ */
+const DEFAULT_STOP_WORDS = new Set([
+    'the',
+    'is',
+    'at',
+    'of',
+    'on',
+    'and',
+    'a',
+    'an',
+    'to',
+    'in',
+    'for',
+    'with',
+    'that',
+    'this',
+    'it',
+    'as',
+    'by',
+    'are',
+    'was',
+    'be',
+    'or',
+    'from',
+    'not',
+])
+
+/**
  * Simple, non-aggressive tokenizer. Converts text to lowercase and splits by non-word characters.
- * Preprocessing does lowercasing and removes non-word characters except spaces
+ * Preprocessing does lowercasing and removes non-word characters except spaces.
+ * Now includes safer stemming and improved performance.
  *
- * @param {string} the input text to tokenize
+ * @param {string} text - The input text to tokenize
+ * @param {TokenizerOptions} [options] - Configuration options
  * @returns {string[]} An array of tokens (words).
  */
-export const tokenize = (text) => {
+export const tokenize = (text, options = {}) => {
     if (typeof text !== 'string') {
         throw new TypeError('Input must be a string')
     }
+
+    const useStemming = options.stemming ?? true
+    const stopWords = options.stopWords || DEFAULT_STOP_WORDS
 
     // 1. Lowercase
     let processed = text.toLowerCase()
@@ -25,34 +65,32 @@ export const tokenize = (text) => {
     processed = processed.replace(/[^\p{L}\p{N}\s]+/gu, ' ')
 
     // 3. Split by whitespace
-    const tokens = processed.split(/\s+/).filter((t) => t.length > 0)
+    const rawTokens = processed.split(/\s+/)
+    const results = []
 
-    // 4. Stop words (basic list)
-    const stopWords = new Set([
-        'the',
-        'is',
-        'at',
-        'of',
-        'on',
-        'and',
-        'a',
-        'an',
-        'to',
-        'in',
-        'for',
-        'with',
-    ])
+    for (const t of rawTokens) {
+        // Skip empty strings
+        if (t.length === 0) continue
 
-    return (
-        tokens
-            .filter((t) => !stopWords.has(t))
-            // 5. Simple stemming (optional but helpful)
-            .map((t) => {
-                if (t.endsWith('ing')) return t.slice(0, -3)
-                if (t.endsWith('ies')) return t.slice(0, -3) + 'y'
-                if (t.endsWith('s') && !t.endsWith('ss')) return t.slice(0, -1)
-                return t
-            })
-            .filter((t) => t.length > 0) // Filter empty strings after stemming (e.g. "s" -> "")
-    )
+        // Skip stop words
+        if (stopWords.has(t)) continue
+
+        let token = t
+
+        // 4. Safer Simple Stemming
+        // Only stem words longer than 3 chars to avoid over-stemming short words like "gas" or "bus"
+        if (useStemming && token.length > 3) {
+            if (token.endsWith('ing')) {
+                token = token.slice(0, -3)
+            } else if (token.endsWith('ies')) {
+                token = token.slice(0, -3) + 'y'
+            } else if (token.endsWith('s') && !token.endsWith('ss')) {
+                token = token.slice(0, -1)
+            }
+        }
+
+        results.push(token)
+    }
+
+    return results
 }
