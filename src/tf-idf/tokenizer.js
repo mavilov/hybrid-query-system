@@ -192,12 +192,12 @@ const DEFAULT_STOP_WORDS = new Set([
 
 /**
  * Simple, non-aggressive stemmer.
- * Only stems words longer than 3 chars to avoid over-stemming short words like "gas" or "bus"
+ * Only stems tokens that are 4 chars or more to avoid over-stemming short words like "gas" or "bus"
  * @param {string} token - The token to stem.
  * @returns {string} The stemmed token.
  */
 const _stem = (token) => {
-    if (token.length <= 3) {
+    if (token.length < 4) {
         return token
     }
 
